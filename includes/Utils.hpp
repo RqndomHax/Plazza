@@ -8,6 +8,11 @@
 #ifndef UTILS_HPP_
     #define UTILS_HPP_
 
+    #include <vector>
+    #include <string>
+
 bool isNumberAndPositive(char const *target);
+
+std::vector<std::string> splitString(std::string target, std::string dlm);
 
 #endif /* !UTILS_HPP_ */

@@ -22,7 +22,7 @@ OUT		= plazza
 all: $(OUT)
 
 $(OUT): $(OBJ)
-	$(CC) -o $@ $(SRC) $(CFLAGS) $(INCLUDE)
+	$(CC) -o $@ $(SRC) $(INCLUDE) $(CFLAGS)
 
 clean:
 	$(RM) -rf $(OBJ)

@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <ArgsManager.hpp>
+#include <ShellManager.hpp>
 
 int main(int argc, char **argv)
 {
@@ -22,5 +23,7 @@ int main(int argc, char **argv)
     std::cout << "Cooking time = " << settings.getCookingTime() << std::endl;
     std::cout << "Cooks = " << settings.getCooks() << std::endl;
     std::cout << "Replace duration = " << settings.getReplaceDuration() << std::endl;
+    Plazza::ShellManager shellManager;
+    shellManager.runShell();
     return (0);
 }
