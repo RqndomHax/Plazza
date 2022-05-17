@@ -2,21 +2,20 @@
 ** EPITECH PROJECT, 2022
 ** B-CCP-400-MPL-4-1-theplazza-paul.comte
 ** File description:
-** ShellManager
+** OrderBuilder
 */
 
-#ifndef SHELLMANAGER_HPP_
-    #define SHELLMANAGER_HPP_
-    #include <string>
-    #include "Pizzeria.hpp"
+#ifndef ORDERBUILDER_HPP_
+    #define ORDERBUILDER_HPP_
+    #include "Order.hpp"
 
 namespace Plazza {
 
-    class ShellManager {
+    class OrderBuilder {
         public:
-            ShellManager(Pizzeria pizzeria);
+            OrderBuilder(std::string order);
 
-            void runShell();
+            Order buildOrder();
 
             class Error : public std::exception {
                 public:
@@ -31,15 +30,17 @@ namespace Plazza {
                     std::string const _message;
             };
 
-            class Exit : public std::exception {
-            };
 
         private:
-            Pizzeria _pizzeria;
+            std::string _rawType;
+            std::string _rawSize;
+            std::string _rawQuantity;
 
-            void _parseInput(std::string command);
+            PizzaType _retrieveType();
+            PizzaSize _retrieveSize();
+            int _retrieveQuantity();
     };
 
 }
 
-#endif /* !SHELLMANAGER_HPP_ */
+#endif /* !ORDERBUILDER_HPP_ */

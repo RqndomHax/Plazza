@@ -15,4 +15,6 @@ bool isNumberAndPositive(char const *target);
 
 std::vector<std::string> splitString(std::string target, std::string dlm);
 
+bool stringStartsWith(std::string prefix, std::string target);
+
 #endif /* !UTILS_HPP_ */

@@ -8,21 +8,25 @@
 #ifndef ORDER_HPP_
     #define ORDER_HPP_
     #include "Pizza.hpp"
+    #include <string>
 
 namespace Plazza {
 
     class Order {
         public:
-            Order(PizzaType pizzaType, PizzaSize pizzaSize);
+            Order(PizzaType pizzaType, PizzaSize pizzaSize, int quantity);
 
             PizzaType getPizzaType();
             PizzaSize getPizzaSize();
+            int getQuantity();
 
         private:
             PizzaType _pizzaType;
             PizzaSize _pizzaSize;
+            int _quantity;
     };
 
 }
+
 
 #endif /* !ORDER_HPP_ */

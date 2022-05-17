@@ -20,10 +20,10 @@ int main(int argc, char **argv)
         return (84);
     }
     Plazza::Settings settings = argsManager.buildSettings();
-    std::cout << "Cooking time = " << settings.getCookingTime() << std::endl;
-    std::cout << "Cooks = " << settings.getCooks() << std::endl;
-    std::cout << "Replace duration = " << settings.getReplaceDuration() << std::endl;
-    Plazza::ShellManager shellManager;
+    std::cerr << "Cooking time = " << settings.getCookingTime() << std::endl;
+    std::cerr << "Cooks = " << settings.getCooks() << std::endl;
+    std::cerr << "Replace duration = " << settings.getReplaceDuration() << std::endl;
+    Plazza::ShellManager shellManager = Plazza::ShellManager(Plazza::Pizzeria());
     shellManager.runShell();
     return (0);
 }

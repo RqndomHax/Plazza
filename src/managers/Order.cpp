@@ -5,14 +5,15 @@
 ** OrderManager
 */
 
-#include <Order.hpp>
 #include <string>
+#include <Order.hpp>
 
 namespace Plazza {
 
-    Order::Order(PizzaType pizzaType, PizzaSize pizzaSize) {
+    Order::Order(PizzaType pizzaType, PizzaSize pizzaSize, int quantity) {
         this->_pizzaType = pizzaType;
         this->_pizzaSize = pizzaSize;
+        this->_quantity = quantity;
     }
 
     PizzaType Order::getPizzaType() {
@@ -23,9 +24,8 @@ namespace Plazza {
         return (this->_pizzaSize);
     }
 
-    Order retrieveOrder(std::string order) {
-        (void) order;
-        return (Order(PizzaType::Americana, PizzaSize::L));
+    int Order::getQuantity() {
+        return (this->_quantity);
     }
 
 }

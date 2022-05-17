@@ -8,9 +8,14 @@
 #include <iostream>
 #include <fstream>
 #include <ShellManager.hpp>
+#include <OrderBuilder.hpp>
 #include <Utils.hpp>
 
 namespace Plazza {
+
+    ShellManager::ShellManager(Pizzeria pizzeria) {
+        this->_pizzeria = pizzeria;
+    }
 
     void ShellManager::runShell() {
         std::string line;
@@ -31,12 +36,17 @@ namespace Plazza {
     void ShellManager::_parseInput(std::string command) {
         if (command == "exit")
             throw ShellManager::Exit();
-        std::vector<std::string> commands = splitString(command, " ");
-        std::cerr << "Commands =";
-        for (std::string cmd : commands) {
-            std::cerr << " [" << cmd << "]";
+        for (std::string order : splitString(command, ";")) {
+            try {
+                Order tmp = OrderBuilder(order).buildOrder();
+
+                if (tmp.getQuantity() > 0)
+                    this->_pizzeria.writeOrder(tmp);
+            } catch (OrderBuilder::Error const &error) {
+                std::cerr << "[Shell error] " << error.what() << std::endl;
+            }
+
         }
-        std::cerr << std::endl;
     }
 
 }

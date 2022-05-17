@@ -47,7 +47,6 @@ namespace Plazza {
     void ArgsManager::_checkCooks() {
         char *endPtr;
 
-        if (this->_cooks)
         this->_cooks = std::strtol(this->_argv[2], &endPtr, 10);
         if (this->_argv[2] == endPtr)
             throw ArgsManager::Error("Cooks is not a valid integer.");
