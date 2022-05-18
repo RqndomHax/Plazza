@@ -6,10 +6,17 @@
 */
 
 #include <IPC.hpp>
+#include <iostream>
 
 namespace Plazza {
 
     IPC::IPC() {
+    }
+
+    IPC::~IPC() {
+        if (this->_requests.empty() == false)
+            std::cerr << "Error while emptying the requests" << std::endl;
+        std::cerr << "IPC unloaded" << std::endl;
     }
 
     std::stack<int> IPC::getRequests() {

@@ -18,10 +18,29 @@ namespace Plazza {
 
             IPC *build();
 
+            class Error : public std::exception {
+                public:
+
+                    Error(std::string message) : _message(message) {}
+
+                    char const *what() const noexcept override {
+                        return (this->_message).c_str();
+                    }
+
+                private:
+                    std::string const _message;
+            };
+
         private:
             void *_ptr;
             IPC *_ipc;
+            key_t _key;
             int _shmid;
+
+            void _createSocketFile();
+            void _retrieveSocketKey();
+            void _retrieveShmid();
+            void _initializeIPC();
     };
 
 }

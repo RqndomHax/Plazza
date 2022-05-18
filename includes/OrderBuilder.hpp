@@ -30,7 +30,6 @@ namespace Plazza {
                     std::string const _message;
             };
 
-
         private:
             std::string _rawType;
             std::string _rawSize;

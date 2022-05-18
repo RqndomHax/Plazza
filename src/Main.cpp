@@ -25,11 +25,17 @@ int main(int argc, char **argv)
     std::cerr << "Cooks = " << settings.getCooks() << std::endl;
     std::cerr << "Replace duration = " << settings.getReplaceDuration() << std::endl;
 
-    Plazza::SharedIPC sharedIPC = Plazza::SharedIPC();
-    Plazza::IPC *ipc = sharedIPC.build();
-    if (ipc != nullptr)
-        std::cerr << "ipc successfully created" << std::endl;
+    Plazza::SharedIPC ipcBuilder;
+    Plazza::IPC *ipc = nullptr;
 
+    try {
+        ipc = ipcBuilder.build();
+    } catch (Plazza::SharedIPC::Error const &error) {
+        std::cerr << error.what() << std::endl;
+        return (84);
+    }
+
+    (void) ipc;
     Plazza::ShellManager shellManager = Plazza::ShellManager(Plazza::Pizzeria());
     shellManager.runShell();
     return (0);

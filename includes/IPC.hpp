@@ -14,6 +14,7 @@ namespace Plazza {
     class IPC {
         public:
             IPC();
+            ~IPC();
 
             std::stack<int> getRequests();
 
