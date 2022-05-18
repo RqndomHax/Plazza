@@ -12,6 +12,7 @@ namespace Plazza {
 
     class Settings {
         public:
+            Settings() {}
             Settings(double cookingTime, int cooks, long replaceDuration);
 
             double getCookingTime();

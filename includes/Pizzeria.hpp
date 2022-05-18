@@ -8,18 +8,25 @@
 #ifndef PIZZERIA_HPP_
     #define PIZZERIA_HPP_
     #include <vector>
+    #include "Settings.hpp"
+    #include "IPC.hpp"
     #include "Order.hpp"
 
 namespace Plazza {
 
     class Pizzeria {
         public:
-            Pizzeria();
+            Pizzeria() {}
+            Pizzeria(Settings settings, IPC *ipc);
 
-            void writeOrder(Order order);
+            void dispatchOrder(Order order);
             void removeKitchen(int kitchenId);
             void createKitchen();
+            Settings getSettings();
+            IPC *getIPC();
         private:
+            Settings _settings;
+            IPC *_ipc;
             std::vector<int> _kitchensId;
             int _nextId;
     };

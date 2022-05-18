@@ -5,16 +5,18 @@
 ** Pizzeria
 */
 
-#include "Pizzeria.hpp"
 #include <algorithm>
+#include <Pizzeria.hpp>
 
 namespace Plazza {
 
-    Pizzeria::Pizzeria() {
+    Pizzeria::Pizzeria(Settings settings, IPC *ipc) {
+        this->_settings = settings;
+        this->_ipc = ipc;
         this->_nextId = 1;
     }
 
-    void Pizzeria::writeOrder(Order order) {
+    void Pizzeria::dispatchOrder(Order order) {
         (void) order;
     }
 
@@ -28,7 +30,14 @@ namespace Plazza {
 
     void Pizzeria::createKitchen() {
         this->_kitchensId.push_back(this->_nextId++);
+    }
 
+    Settings Pizzeria::getSettings() {
+        return (this->_settings);
+    }
+
+    IPC *Pizzeria::getIPC() {
+        return (this->_ipc);
     }
 
 }

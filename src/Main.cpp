@@ -21,10 +21,6 @@ int main(int argc, char **argv)
         return (84);
     }
     Plazza::Settings settings = argsManager.buildSettings();
-    std::cerr << "Cooking time = " << settings.getCookingTime() << std::endl;
-    std::cerr << "Cooks = " << settings.getCooks() << std::endl;
-    std::cerr << "Replace duration = " << settings.getReplaceDuration() << std::endl;
-
     Plazza::SharedIPC ipcBuilder;
     Plazza::IPC *ipc = nullptr;
 
@@ -35,8 +31,7 @@ int main(int argc, char **argv)
         return (84);
     }
 
-    (void) ipc;
-    Plazza::ShellManager shellManager = Plazza::ShellManager(Plazza::Pizzeria());
+    Plazza::ShellManager shellManager = Plazza::ShellManager(Plazza::Pizzeria(settings, ipc));
     shellManager.runShell();
     return (0);
 }
