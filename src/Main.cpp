@@ -8,6 +8,7 @@
 #include <iostream>
 #include <ArgsManager.hpp>
 #include <ShellManager.hpp>
+#include <SharedIPC.hpp>
 
 int main(int argc, char **argv)
 {
@@ -23,6 +24,12 @@ int main(int argc, char **argv)
     std::cerr << "Cooking time = " << settings.getCookingTime() << std::endl;
     std::cerr << "Cooks = " << settings.getCooks() << std::endl;
     std::cerr << "Replace duration = " << settings.getReplaceDuration() << std::endl;
+
+    Plazza::SharedIPC sharedIPC = Plazza::SharedIPC();
+    Plazza::IPC *ipc = sharedIPC.build();
+    if (ipc != nullptr)
+        std::cerr << "ipc successfully created" << std::endl;
+
     Plazza::ShellManager shellManager = Plazza::ShellManager(Plazza::Pizzeria());
     shellManager.runShell();
     return (0);
