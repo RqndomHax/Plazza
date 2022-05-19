@@ -7,7 +7,9 @@
 
 #ifndef IPC_HPP_
     #define IPC_HPP_
-    #include <stack>
+    #include <string>
+    #include <array>
+    #include <mutex>
 
 namespace Plazza {
 
@@ -16,10 +18,15 @@ namespace Plazza {
             IPC();
             ~IPC();
 
-            std::stack<int> getRequests();
+            std::string read();
+            void write(std::string content);
+            std::string _buffer;
 
         private:
-            std::stack<int> _requests;
+            int _calls;
+            long long int _nextId;
+            long long int _currentId;
+            std::mutex _mutex;
     };
 
 }

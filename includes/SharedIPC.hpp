@@ -33,13 +33,16 @@ namespace Plazza {
 
         private:
             void *_ptr;
+            void *_bufferPtr;
             IPC *_ipc;
             key_t _key;
             int _shmid;
+            int _buffershmid;
 
             void _createSocketFile();
             void _retrieveSocketKey();
             void _retrieveShmid();
+            void _retrieveBufferShmid();
             void _initializeIPC();
     };
 

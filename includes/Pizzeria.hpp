@@ -31,6 +31,9 @@ namespace Plazza {
             int _nextId;
     };
 
+    Pizzeria *getPizzeria(void *pizzeria);
+
 }
+
 
 #endif /* !PIZZERIA_HPP_ */

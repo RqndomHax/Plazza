@@ -6,6 +6,7 @@
 */
 
 #include <algorithm>
+#include <iostream>
 #include <Pizzeria.hpp>
 
 namespace Plazza {
@@ -17,6 +18,7 @@ namespace Plazza {
     }
 
     void Pizzeria::dispatchOrder(Order order) {
+        std::cerr << "Size = " << order.getPizzaSize() << " | Type " << order.getPizzaType() << " | Quantity " << order.getQuantity() << std::endl;
         (void) order;
     }
 

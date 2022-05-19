@@ -53,7 +53,7 @@ namespace Plazza {
     }
 
     void SharedIPC::_retrieveShmid() {
-        this->_shmid = shmget(this->_key, sizeof(IPC), IPC_CREAT | 0777);
+        this->_shmid = shmget(this->_key, sizeof(IPC) + 1200, IPC_CREAT | 0777);
 
         if (this->_shmid == -1)
             throw SharedIPC::Error("Could not access shared memory.");
@@ -63,7 +63,8 @@ namespace Plazza {
         this->_ptr = shmat(this->_shmid, 0, 0);
 
         if (this->_ptr == nullptr)
-            throw SharedIPC::Error("Shared memory attachment error");
+            throw SharedIPC::Error("[IPC] Shared memory attachment error");
+
         this->_ipc = new (this->_ptr) IPC();
     }
 

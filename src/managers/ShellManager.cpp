@@ -13,8 +13,7 @@
 
 namespace Plazza {
 
-    ShellManager::ShellManager(Pizzeria pizzeria) {
-        this->_pizzeria = pizzeria;
+    ShellManager::ShellManager() {
     }
 
     void ShellManager::runShell() {
@@ -41,7 +40,7 @@ namespace Plazza {
                 Order tmp = OrderBuilder(order).buildOrder();
 
                 if (tmp.getQuantity() > 0)
-                    this->_pizzeria.dispatchOrder(tmp);
+                    getPizzeria(nullptr)->dispatchOrder(tmp);
             } catch (OrderBuilder::Error const &error) {
                 std::cerr << "[Shell error] " << error.what() << std::endl;
             }

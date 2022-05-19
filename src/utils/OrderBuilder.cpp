@@ -27,7 +27,6 @@ namespace Plazza {
         PizzaSize size = this->_retrieveSize();
         int quantity = this->_retrieveQuantity();
 
-        std::cerr << "Type = " << type << " | Size = " << size << " | quantity = " << quantity << std::endl;
         return (Order(type, size, quantity));
     }
 
