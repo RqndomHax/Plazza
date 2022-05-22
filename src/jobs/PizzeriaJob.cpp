@@ -42,6 +42,7 @@ namespace Plazza {
         (void) kitchen;
         kitchen->addProcessingOrder();
         this->_jobOwner->inProgressOrders += 1;
+        *this->_jobOwner->getLogger() << kitchen->retrieveId() + pizza->pack() + " preparing.";
     }
 
     void PizzeriaJob::_cookFinished(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
@@ -51,6 +52,7 @@ namespace Plazza {
         this->_jobOwner->inProgressOrders -= 1;
         this->_jobOwner->addCompletedOrders();
         kitchen->addCompletedOrder();
+        *this->_jobOwner->getLogger() << kitchen->retrieveId() + pizza->pack() + " baked.";
     }
 
     void PizzeriaJob::_cookIngredients(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
