@@ -15,7 +15,7 @@ namespace Plazza {
         public:
             KitchenInfo(int id, Pipe *pipe, Pipe *masterPipe);
 
-            void createKitchen(void);
+            void createKitchen(Settings settings);
 
             int getId(void);
             

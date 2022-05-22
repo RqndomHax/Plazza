@@ -19,11 +19,11 @@ namespace Plazza {
         this->_ordersProcessing = 0;
     }
 
-    void KitchenInfo::createKitchen(void) {
+    void KitchenInfo::createKitchen(Settings settings) {
         int cpid = fork();
 
         if (cpid == 0) {
-            Kitchen kitchen(this->_id, this->_pipe, this->_masterPipe);
+            Kitchen kitchen(this->_id, this->_pipe, this->_masterPipe, settings);
             return;
         }
     }

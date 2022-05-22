@@ -9,9 +9,10 @@
 
 namespace Plazza {
 
-    Pizza::Pizza(PizzaType type, std::vector<Ingredients> ingredients, PizzaSize size) {
+    Pizza::Pizza(PizzaType type, std::vector<Ingredients> ingredients, double bakeTime, PizzaSize size) {
         this->_type = type;
         this->_ingredients = ingredients;
+        this->_bakeTime = bakeTime;
         this->_size = size;
     }
 
@@ -21,6 +22,10 @@ namespace Plazza {
 
     std::vector<Ingredients> Pizza::getIngredients(void) const {
         return (this->_ingredients);
+    }
+
+    double Pizza::getBakeTime(void) const {
+        return (this->_bakeTime);
     }
 
     PizzaSize Pizza::getSize(void) const {
@@ -71,6 +76,5 @@ namespace Plazza {
 
         return (content);
     }
-
 
 }

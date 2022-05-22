@@ -43,11 +43,13 @@ namespace Plazza {
         
         public:
 
-            Pizza(PizzaType type = Margarita, std::vector<Ingredients> ingredients = {}, PizzaSize size = S);
+            Pizza(PizzaType type = Margarita, std::vector<Ingredients> ingredients = {}, double bakeTime = -1, PizzaSize size = S);
 
             PizzaType getType(void) const;
 
             std::vector<Ingredients> getIngredients(void) const;
+
+            double getBakeTime(void) const;
 
             PizzaSize getSize(void) const;
 
@@ -59,6 +61,7 @@ namespace Plazza {
             PizzaType _type;
             std::vector<Ingredients> _ingredients;
             PizzaSize _size;
+            double _bakeTime;
     };
 
 }

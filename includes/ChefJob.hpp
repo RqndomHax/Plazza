@@ -14,8 +14,10 @@ namespace Plazza {
 
     class ChefJob : public Job<Kitchen> {
         public:
-            ChefJob(Kitchen *owner);
+            ChefJob(int id, Kitchen *owner);
             ~ChefJob() override;
+
+            int getId(void) const;
 
             bool hasPizza(void);
 
@@ -26,9 +28,14 @@ namespace Plazza {
             void joinThread(void) override;
 
         private:
+            int _id;
             Kitchen *_jobOwner;
             Pizza *_currentPizza;
             std::thread _thread;
+
+            bool _hasIngredients(void);
+            void _takeIngredients(void);
+            std::string _retrieveId(void);
     };
 
 }

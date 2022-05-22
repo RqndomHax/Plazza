@@ -26,14 +26,25 @@ namespace Plazza {
         private:
             Pizzeria *_jobOwner;
             std::thread _thread;
+            bool _isRunning;
 
-            std::map<std::string, void (PizzeriaJob::*)(KitchenInfo *infos)> _events;
+            std::map<std::string, void (PizzeriaJob::*)(KitchenInfo *kitchen)> _kitchenEvents;
+            std::map<std::string, void (PizzeriaJob::*)(int cookId, Pizza *pizza, KitchenInfo *kitchen)> _cookEvents;
 
             void _restart(void);
+
             void _kitchenInitialized(KitchenInfo *kitchen);
             void _kitchenClosed(KitchenInfo *kitchen);
+
+            void _cookPreparing(int cookId, Pizza *pizza, KitchenInfo *kitchen);
+
             int _getId(std::string line);
-            bool _isRunning;
+
+            void _setKitchenEvents(void);
+            void _setCookEvents(void);
+
+            void _checkKitchenEvents(std::string line);
+            void _checkCookEvents(std::string line);
     };
 
 }

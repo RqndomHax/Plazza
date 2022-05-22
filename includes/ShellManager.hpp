@@ -15,7 +15,7 @@ namespace Plazza {
 
     class ShellManager {
         public:
-            ShellManager();
+            ShellManager(Pizzeria *pizzeria);
 
             void runShell();
 
@@ -37,6 +37,8 @@ namespace Plazza {
 
         private:
             void _parseInput(std::string command);
+
+            Pizzeria *_pizzeria;
 
             PizzaManager _pizzaManager;
     };

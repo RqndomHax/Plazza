@@ -16,16 +16,20 @@ namespace Plazza {
         this->_replaceDuration = replaceDuration;
     }
 
-    double Settings::getCookingTime() const {
+    double Settings::getCookingTime(void) const {
         return (this->_cookingTime);
     }
 
-    int Settings::getCooks() const {
+    int Settings::getCooks(void) const {
         return (this->_cooks);
     }
 
-    long Settings::getReplaceDuration() const {
+    long Settings::getReplaceDuration(void) const {
         return (this->_replaceDuration);
+    }
+
+    PizzaManager Settings::getPizzaManager(void) {
+        return (this->_pizzaManager);
     }
 
 }

@@ -12,21 +12,28 @@
 #include <Kitchen.hpp>
 #include <Job.hpp>
 #include <KitchenJob.hpp>
+#include <ChefJob.hpp>
 
 namespace Plazza {
 
-    Kitchen::Kitchen(int id, Pipe *pipe, Pipe *masterPipe) {
+    Kitchen::Kitchen(int id, Pipe *pipe, Pipe *masterPipe, Settings settings) {
         this->_id = id;
         this->_pipe = pipe;
         this->_masterPipe = masterPipe;
+        this->_settings = settings;
 
         this->_isActive = true;
-        *masterPipe << this->retrieveId() + "Kitchen initialized.";
+
+        this->_fillIngredients();
+        this->_createCooks();
+
         this->_orderHandler = new KitchenJob(this);
+        *masterPipe << this->retrieveId() + "Kitchen initialized.";
         this->_handleKitchen();
     }
 
     Kitchen::~Kitchen() {
+        *this->_pipe << "\n";
         for (Job<Kitchen> *job : this->_cooks)
             if (job != nullptr) {
                 job->joinThread();
@@ -38,12 +45,48 @@ namespace Plazza {
             delete this->_orderHandler;
         }
 
+        while (!this->_orders.empty()) {
+            delete this->_orders.front();
+            this->_orders.pop();
+        }
+
         this->_cooks.clear();
         *this->_masterPipe << this->retrieveId() + "Kitchen closed.";
     }
 
-    Pipe *Kitchen::getPipe() {
+    void Kitchen::_fillIngredients(void) {
+        for (int i = 0; i < 5; i++) {
+            this->_ingredients.push_back(DOE);
+            this->_ingredients.push_back(TOMATO);
+            this->_ingredients.push_back(GRUYERE);
+            this->_ingredients.push_back(EGGPLANT);
+            this->_ingredients.push_back(HAM);
+            this->_ingredients.push_back(MUSHROOMS);
+            this->_ingredients.push_back(STEAK);
+            this->_ingredients.push_back(GOAT_CHEESE);
+            this->_ingredients.push_back(CHIEF_LOVE);
+        }
+    }
+
+    std::list<Ingredients> &Kitchen::getAvailableIngredients(void) {
+        return (this->_ingredients);
+    }
+
+    void Kitchen::_createCooks(void) {
+        for (int i = 0; i < this->_settings.getCooks(); i++)
+            this->_cooks.push_back(new ChefJob(i + 1, this));
+    }
+
+    Pipe *Kitchen::getPipe(void) {
         return (this->_pipe);
+    }
+
+    Pipe *Kitchen::getMasterPipe(void) {
+        return (this->_masterPipe);
+    }
+
+    Settings Kitchen::getSettings(void) {
+        return (this->_settings);
     }
 
     void Kitchen::setActive(bool status) {
@@ -62,6 +105,29 @@ namespace Plazza {
         return (this->_id);
     }
 
+    void Kitchen::pushOrder(Pizza *pizza) {
+        this->_orders.push(pizza);
+    }
+
+    bool Kitchen::_updateOrders(void) {
+        bool hasUpdated = false;
+
+        for (Job<Kitchen> *job : this->_cooks) {
+            ChefJob *cook = dynamic_cast<ChefJob *>(job);
+
+            if (this->_orders.empty())
+                return (hasUpdated);
+
+            if (!cook->hasPizza()) {
+                cook->setPizza(this->_orders.front());
+                this->_orders.pop();
+                hasUpdated = true;
+            }
+        }
+
+        return (hasUpdated);
+    }
+
     void Kitchen::_handleKitchen() {
         auto t_start = std::chrono::high_resolution_clock::now();
         while (this->_isActive) {
@@ -71,8 +137,16 @@ namespace Plazza {
 
             if (elapsed_time_ms >= 5000) {
                 this->_isActive = false;
-                *this->_pipe << "\n";
+                this->~Kitchen();
+                std::exit(0);
+                return;
             }
+
+            if (this->_orders.empty())
+                continue;
+
+            if (this->_updateOrders())
+                t_start = t_end;
         }
         this->~Kitchen();
         std::exit(0);

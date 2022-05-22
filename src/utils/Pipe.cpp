@@ -48,7 +48,6 @@ namespace Plazza {
 
     std::string Pipe::operator<<(std::string content) {
         dprintf(this->_writeFd, "%s\n", content.c_str());
-        //*this->_logger << content.c_str();
         return (content);
     }
 
@@ -57,7 +56,6 @@ namespace Plazza {
         ss << os.rdbuf();
         std::string content = ss.str();
         dprintf(this->_writeFd, "%s\n", content.c_str());
-        //*this->_logger << content.c_str();
         return (os);
     }
 

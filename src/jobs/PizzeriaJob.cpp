@@ -12,13 +12,32 @@ namespace Plazza {
 
     PizzeriaJob::PizzeriaJob(Pizzeria *jobOwner) {
         this->_jobOwner = jobOwner;
-        this->_thread = std::thread(&PizzeriaJob::runJob, this);
-        this->_events["Kitchen initialized"] = &PizzeriaJob::_kitchenInitialized;
-        this->_events["Kitchen closed"] = &PizzeriaJob::_kitchenClosed;
+
+        this->_setCookEvents();
+        this->_setKitchenEvents();
+
         this->_isRunning = true;
+
+        this->_thread = std::thread(&PizzeriaJob::runJob, this);
     }
 
     PizzeriaJob::~PizzeriaJob() {
+    }
+
+    void PizzeriaJob::_setKitchenEvents(void) {
+        this->_kitchenEvents["Kitchen initialized"] = &PizzeriaJob::_kitchenInitialized;
+        this->_kitchenEvents["Kitchen closed"] = &PizzeriaJob::_kitchenClosed;
+    }
+
+    void PizzeriaJob::_setCookEvents(void) {
+        this->_cookEvents["Cook preparing"] = &PizzeriaJob::_cookPreparing;
+    }
+
+    void PizzeriaJob::_cookPreparing(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
+        (void) cookId;
+        (void) pizza;
+        (void) kitchen;
+        std::cout << "Pizza is being prepared" << std::endl;
     }
 
     void PizzeriaJob::_kitchenInitialized(KitchenInfo *kitchen) {
@@ -46,22 +65,40 @@ namespace Plazza {
         return (std::atoi(line.substr(pos1 + 1, pos2).c_str()));
     }
 
+    void PizzeriaJob::_checkKitchenEvents(std::string line) {
+        KitchenInfo *kitchen = this->_jobOwner->getKitchen(this->_getId(line));
+
+        if (kitchen == nullptr)
+            return;
+
+        std::string parsed = line.substr(line.find(']') + 2);
+        parsed.pop_back();
+
+        void (PizzeriaJob::*func)(KitchenInfo *infos) = this->_kitchenEvents[parsed];
+        if (func != nullptr)
+           (this->*func)(kitchen);
+    }
+    
+    void PizzeriaJob::_checkCookEvents(std::string line) {
+        KitchenInfo *kitchen = this->_jobOwner->getKitchen(this->_getId(line));
+
+        if (kitchen == nullptr)
+            return;
+        
+        std::string tmp = line.substr(line.find(']') + 2);
+
+        std::cout << "tmp = [" << tmp << "]" << std::endl;
+    }
+
     void PizzeriaJob::runJob(void) {
          std::string line = "";
 
         *this->_jobOwner->getMasterPipe() >> line;
 
-        KitchenInfo *kitchen = this->_jobOwner->getKitchen(this->_getId(line));
+        std::cout << "master = [" << line << "]" << std::endl;
 
-        if (kitchen == nullptr)
-            return (this->_restart());
-
-        std::string parsed = line.substr(line.find(']') + 2);
-        parsed.pop_back();
-
-        void (PizzeriaJob::*func)(KitchenInfo *infos) = this->_events[parsed];
-        if (func != nullptr)
-           (this->*func)(kitchen);
+        this->_checkKitchenEvents(line);
+        this->_checkCookEvents(line);
 
         this->_restart();
     }

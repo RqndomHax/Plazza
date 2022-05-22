@@ -10,6 +10,7 @@
 #include <Kitchen.hpp>
 #include <PizzeriaJob.hpp>
 #include <unistd.h>
+#include <iostream>
 
 namespace Plazza {
 
@@ -24,6 +25,7 @@ namespace Plazza {
     }
 
     Pizzeria::~Pizzeria() {
+        *this->_masterPipe << "\n";
         for (KitchenInfo *tmp : this->_kitchens) {
             *tmp->getPipe() << "[EXIT]";
             delete tmp->getPipe();
@@ -41,6 +43,7 @@ namespace Plazza {
     void Pizzeria::dispatchOrder(Order order) {
         for (int i = 0; i < order.getQuantity(); i++) {
             KitchenInfo *kitchen = this->getKitchen(1);
+
             *kitchen->getPipe() << "[COOK] " + order.getPizza().pack();
         }
     }
@@ -52,7 +55,7 @@ namespace Plazza {
 
     void Pizzeria::createKitchen() {
         KitchenInfo *kitchenInfo = new KitchenInfo(this->_nextId++, new Pipe(), this->_masterPipe);
-        kitchenInfo->createKitchen();
+        kitchenInfo->createKitchen(this->_settings);
         this->_kitchens.push_back(kitchenInfo);
     }
 

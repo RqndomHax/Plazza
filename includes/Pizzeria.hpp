@@ -51,8 +51,6 @@ namespace Plazza {
             PizzeriaJob *_job = nullptr;
     };
 
-    Pizzeria *getPizzeria(void *pizzeria);
-
 }
 
 

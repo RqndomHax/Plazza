@@ -19,9 +19,10 @@ namespace Plazza {
 
             std::map<std::string, Pizza> getPizzas(void) const;
 
+            Pizza *unpackPizza(std::string target);
+
         private:
             std::map<std::string, Pizza> _pizzas;
-
     };
 
 }

@@ -9,10 +9,12 @@
     #define KITCHEN_HPP_
     #include <string>
     #include <queue>
+    #include <list>
     #include <mutex>
     #include "Pipe.hpp"
     #include "Job.hpp"
     #include "Pizza.hpp"
+    #include "Settings.hpp"
 
 namespace Plazza {
 
@@ -20,10 +22,12 @@ namespace Plazza {
 
     class Kitchen {
         public:
-            Kitchen(int id, Pipe *pipe, Pipe *masterPipe);
+            Kitchen(int id, Pipe *pipe, Pipe *masterPipe, Settings settings);
             ~Kitchen();
 
             Pipe *getPipe();
+
+            Pipe *getMasterPipe();
 
             bool isActive(void) const;
 
@@ -35,19 +39,31 @@ namespace Plazza {
 
             int getId() const;
 
+            std::list<Ingredients> &getAvailableIngredients();
+
+            Settings getSettings();
+
+            void pushOrder(Pizza *pizza);
+
         private:
             int _id;
-            Pipe *_masterPipe;
             Pipe *_pipe;
-            std::queue<Pizza> _orders;
+            Pipe *_masterPipe;
+            Settings _settings;
+
+
+            std::queue<Pizza *> _orders;
             Job<Kitchen> *_orderHandler;
             std::vector<Job<Kitchen> *> _cooks;
 
+            std::list<Ingredients> _ingredients;
+
             bool _isActive;
-
             void _handleKitchen(void);
+            bool _updateOrders(void);
 
-            void _updateOrders();
+            void _fillIngredients(void);
+            void _createCooks(void);
     };
 
 }

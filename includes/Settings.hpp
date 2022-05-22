@@ -7,6 +7,7 @@
 
 #ifndef SETTINGS_HPP_
     #define SETTINGS_HPP_
+    #include "PizzaManager.hpp"
 
 namespace Plazza {
 
@@ -15,14 +16,19 @@ namespace Plazza {
             Settings() {}
             Settings(double cookingTime, int cooks, long replaceDuration);
 
-            double getCookingTime() const;
-            int getCooks() const;
-            long getReplaceDuration() const;
+            double getCookingTime(void) const;
+
+            int getCooks(void) const;
+
+            long getReplaceDuration(void) const;
+
+            PizzaManager getPizzaManager(void);
 
         private:
             double _cookingTime;
             int _cooks;
             long _replaceDuration;
+            PizzaManager _pizzaManager;
     };
 
 }

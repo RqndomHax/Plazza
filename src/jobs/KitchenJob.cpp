@@ -29,6 +29,9 @@ namespace Plazza {
     void KitchenJob::_checkOrder(std::string line) {
         if (!stringStartsWith("[COOK]", line))
             return;
+
+        Pizza *pizza = _jobOwner->getSettings().getPizzaManager().unpackPizza(line.substr(line.find(']') + 2));
+        this->_jobOwner->pushOrder(pizza);
     }
 
     void KitchenJob::_checkExit(std::string line) {
