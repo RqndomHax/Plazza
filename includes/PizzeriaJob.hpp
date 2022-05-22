@@ -14,13 +14,9 @@ namespace Plazza {
 
     class PizzeriaJob : public Job<Pizzeria> {
         public:
-            PizzeriaJob(Pizzeria *jobOwner, int id, Pipe *pipe);
+            PizzeriaJob(Pizzeria *jobOwner);
 
             ~PizzeriaJob();
-
-            Pipe *getPipe(void);
-
-            int getId(void) const;
 
             void runJob(void) override;
 
@@ -29,8 +25,6 @@ namespace Plazza {
         private:
             Pizzeria *_jobOwner;
             std::thread _thread;
-            Pipe *_pipe;
-            int _id;
     };
 
 }

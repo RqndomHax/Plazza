@@ -5,21 +5,23 @@
 ** Kitchen
 */
 
+#include <unistd.h>
 #include <iostream>
+#include <ctime>
+#include <chrono>
 #include <Kitchen.hpp>
 #include <Job.hpp>
 #include <KitchenJob.hpp>
-#include <unistd.h>
-#include <chrono>
 
 namespace Plazza {
 
-    Kitchen::Kitchen(int id, Pipe *pipe) {
+    Kitchen::Kitchen(int id, Pipe *pipe, Pipe *masterPipe) {
         this->_id = id;
         this->_pipe = pipe;
+        this->_masterPipe = masterPipe;
 
         this->_isActive = true;
-        *pipe << this->retrieveId() + "Kitchen initialized.";
+        *masterPipe << this->retrieveId() + "Kitchen initialized.";
         this->_orderHandler = new KitchenJob(this);
         this->_handleKitchen();
     }
@@ -39,8 +41,12 @@ namespace Plazza {
         this->_cooks.clear();
     }
 
-    Pipe *Kitchen::getIPC() {
+    Pipe *Kitchen::getPipe() {
         return (this->_pipe);
+    }
+
+    void Kitchen::setActive(bool status) {
+        this->_isActive = status;
     }
 
     bool Kitchen::isActive(void) const {
@@ -56,13 +62,15 @@ namespace Plazza {
     }
 
     void Kitchen::_handleKitchen() {
+        auto t_start = std::chrono::high_resolution_clock::now();
         while (this->_isActive) {
-            std::string line = "";
+            auto t_end = std::chrono::high_resolution_clock::now();
 
-            *this->_pipe >> line;
+            double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
 
-            if (line == "[EXIT]")
+            if (elapsed_time_ms >= 5000) {
                 this->_isActive = false;
+            }
         }
         std::exit(0);
     }

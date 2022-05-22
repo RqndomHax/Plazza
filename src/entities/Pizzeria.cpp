@@ -17,58 +17,61 @@ namespace Plazza {
         this->_settings = settings;
         this->_nextId = 1;
 
+        this->_job = new PizzeriaJob(this);
         this->_logger = logger;
         *this->_logger << "Pizzeria initialized!";
     }
 
     Pizzeria::~Pizzeria() {
-        for (Job<Pizzeria> *tmp : this->_jobs) {
-            PizzeriaJob *job = dynamic_cast<PizzeriaJob *>(tmp);
-            job->joinThread();
-            *job->getPipe() << "[EXIT]";
-            delete job;
+        for (KitchenInfo *tmp : this->_kitchens) {
+            *tmp->getPipe() << "[EXIT]";
+            delete tmp->getPipe();
+            delete tmp;
         }
-        this->_jobs.clear();
+        if (this->_job != nullptr) {
+            this->_job->joinThread();
+            delete this->_job;
+        }
+        this->_kitchens.clear();
     }
 
     void Pizzeria::dispatchOrder(Order order) {
         for (int i = 0; i < order.getQuantity(); i++) {
-            PizzeriaJob *job = this->_getJob(1);
-            *job->getPipe() << "[COOK] " + order.getPizza().pack();
+            KitchenInfo *kitchen = this->_getKitchen(1);
+            *kitchen->getPipe() << "[COOK] " + order.getPizza().pack();
         }
     }
 
     void Pizzeria::removeKitchen(int kitchenId) {
-        for (Job<Pizzeria> *tmp : this->_jobs) {
-            PizzeriaJob *job = dynamic_cast<PizzeriaJob *>(tmp);
-            if (job->getId() != kitchenId)
+        for (KitchenInfo *kitchen : this->_kitchens) {
+            if (kitchen->getId() != kitchenId)
                 continue;
-            *job->getPipe() << "[EXIT]";
-            delete job;
+            *kitchen->getPipe() << "[EXIT]";
+            delete kitchen->getPipe();
+            delete kitchen;
         }
     }
 
     void Pizzeria::createKitchen() {
-        Pipe *tmpPipe = new Pipe();
-        int cpid = fork();
-
-        if (cpid == 0) {
-            Kitchen kitchen(this->_nextId, tmpPipe);
-            return;
-        }
-        this->_jobs.push_back(new PizzeriaJob(this, this->_nextId++, tmpPipe));
+        KitchenInfo *kitchenInfo = new KitchenInfo(this->_nextId++, new Pipe(), &this->_masterPipe);
+        kitchenInfo->createKitchen();
+        this->_kitchens.push_back(kitchenInfo);
     }
 
     Settings Pizzeria::getSettings() {
         return (this->_settings);
     }
 
-    PizzeriaJob *Pizzeria::_getJob(int kitchenId) {
-        for (Job<Pizzeria> *tmp : this->_jobs) {
-            PizzeriaJob *job = dynamic_cast<PizzeriaJob *>(tmp);
-            if (job->getId() == kitchenId)
-                return (job);
+    KitchenInfo *Pizzeria::_getKitchen(int kitchenId) {
+        for (KitchenInfo *kitchen : this->_kitchens) {
+            if (kitchen->getId() == kitchenId)
+                return (kitchen);
         }
         return (nullptr);
     }
+
+    Pipe Pizzeria::getMasterPipe(void) {
+        return (this->_masterPipe);
+    }
+
 }

@@ -28,6 +28,11 @@ namespace Plazza {
             Kitchen *_jobOwner;
 
             bool _isTarget(std::string line);
+
+            void _checkOrder(std::string line);
+
+            void _checkExit(std::string line);
+
     };
 
 }

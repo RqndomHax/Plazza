@@ -13,6 +13,7 @@
     #include "Logger.hpp"
     #include "Pipe.hpp"
     #include "Job.hpp"
+    #include "KitchenInfo.hpp"
 
 namespace Plazza {
 
@@ -34,15 +35,19 @@ namespace Plazza {
 
             Logger getLogger(void);
 
+            Pipe getMasterPipe(void);
+
         private:
             Settings _settings;
-            std::vector<Job<Pizzeria> *> _jobs;
+            std::vector<KitchenInfo *> _kitchens;
             int _nextId;
+            Pipe _masterPipe;
             Logger *_logger;
 
             int _retrieveKitchenJob(void);
 
-            PizzeriaJob *_getJob(int kitchenId);
+            KitchenInfo *_getKitchen(int kitchenId);
+            PizzeriaJob *_job;
     };
 
     Pizzeria *getPizzeria(void *pizzeria);

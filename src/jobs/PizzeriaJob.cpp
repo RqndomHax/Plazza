@@ -9,24 +9,12 @@
 
 namespace Plazza {
 
-    PizzeriaJob::PizzeriaJob(Pizzeria *jobOwner, int id, Pipe *pipe) {
+    PizzeriaJob::PizzeriaJob(Pizzeria *jobOwner) {
         this->_jobOwner = jobOwner;
-        this->_id = id;
-        this->_pipe = pipe;
         this->_thread = std::thread(&PizzeriaJob::runJob, this);
     }
 
     PizzeriaJob::~PizzeriaJob() {
-        if (this->_pipe != nullptr)
-            delete this->_pipe;
-    }
-
-    Pipe *PizzeriaJob::getPipe(void) {
-        return (this->_pipe);
-    }
-
-    int PizzeriaJob::getId(void) const {
-        return (this->_id);
     }
 
     void PizzeriaJob::runJob(void) {

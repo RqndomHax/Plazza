@@ -26,21 +26,28 @@ namespace Plazza {
         this->runJob();
     }
 
+    void KitchenJob::_checkOrder(std::string line) {
+        if (!stringStartsWith("[COOK]", line))
+            return;
+    }
+
+    void KitchenJob::_checkExit(std::string line) {
+        if (line == "[EXIT]")
+            this->_jobOwner->setActive(false);
+    }
+
     void KitchenJob::runJob(void) {
         if (this->_jobOwner == nullptr)
             return;
 
         std::string line = "";
 
-        *this->_jobOwner->getIPC() >> line;
+        *this->_jobOwner->getPipe() >> line;
 
-        if (!stringStartsWith("[COOK]", line))
-            return (_restart());
+        this->_checkOrder(line);
+        this->_checkExit(line);
 
-        std::cout << "order asked !" << std::endl;
-
-        if (this->_jobOwner->isActive())
-            this->runJob();
+        this->_restart();
     }
 
     void KitchenJob::joinThread(void) {

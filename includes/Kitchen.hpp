@@ -20,10 +20,10 @@ namespace Plazza {
 
     class Kitchen {
         public:
-            Kitchen(int id, Pipe *pipe);
+            Kitchen(int id, Pipe *pipe, Pipe *masterPipe);
             ~Kitchen();
 
-            Pipe *getIPC();
+            Pipe *getPipe();
 
             bool isActive(void) const;
 
@@ -37,6 +37,7 @@ namespace Plazza {
 
         private:
             int _id;
+            Pipe *_masterPipe;
             Pipe *_pipe;
             std::queue<Pizza> _orders;
             Job<Kitchen> *_orderHandler;
