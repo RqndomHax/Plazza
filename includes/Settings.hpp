@@ -15,9 +15,9 @@ namespace Plazza {
             Settings() {}
             Settings(double cookingTime, int cooks, long replaceDuration);
 
-            double getCookingTime();
-            int getCooks();
-            long getReplaceDuration();
+            double getCookingTime() const;
+            int getCooks() const;
+            long getReplaceDuration() const;
 
         private:
             double _cookingTime;

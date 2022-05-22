@@ -8,13 +8,14 @@
 #ifndef PIPE_HPP_
     #define PIPE_HPP_
     #include <stdexcept>
+    #include <ostream>
+    #include "Logger.hpp"
 
 namespace Plazza {
 
-
     class Pipe {
         public:
-            Pipe();
+            Pipe(Logger *logger = nullptr);
             ~Pipe();
 
             class Error : public std::exception {
@@ -30,11 +31,15 @@ namespace Plazza {
                     std::string const _message;
             };
 
-            int getReadFileDescriptor();
+            int getReadFileDescriptor() const;
 
-            int getWriteFileDescriptor();
+            int getWriteFileDescriptor() const;
+
+            std::string operator<<(std::string content);
+            std::ostream& operator<<(std::ostream &os);
 
         private:
+            Logger *_logger;
             int _readFd;
             int _writeFd;
     };

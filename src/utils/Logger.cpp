@@ -5,16 +5,15 @@
 ** Logger
 */
 
-#include <Logger.hpp>
 #include <ctime>
-#include <time.h>
 #include <iostream>
-#include <sstream>
+#include <thread>
+#include <chrono>
+#include <Logger.hpp>
 
 namespace Plazza {
 
     Logger::Logger() {
-        std::cout << "filepath = [" << "" << this->_getCurrentDate() << ".log]" << std::endl;
         this->_logFile = std::ofstream(this->_getCurrentDate() + ".log");
 
         if (!this->_logFile)
@@ -25,12 +24,29 @@ namespace Plazza {
         this->_logFile.close();
     }
 
-    std::string Logger::_getCurrentDate(void) {
+    Logger& Logger::operator<<(std::string const &content) {
+        this->_logFile << this->_getCurrentTime() + content + "\n";
+        return (*this);
+    }
+
+    std::string Logger::_getCurrentDate(void) const {
         std::time_t t = std::time(nullptr);
         char time[20];
 
         std::strftime(time, sizeof(time), "%H:%M:%S-%m_%d_%Y", std::localtime(&t));
         return (std::string(time));
+    }
+
+    std::string Logger::_getCurrentTime(void) const {
+        std::time_t t = std::time(nullptr);
+        char time[20];
+
+        std::strftime(time, sizeof(time), "[%H:%M:%S] ", std::localtime(&t));
+        return (std::string(time));
+    }
+
+    std::ofstream &Logger::getLogFile(void) {
+        return (this->_logFile);
     }
 
 }

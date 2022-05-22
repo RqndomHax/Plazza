@@ -7,14 +7,31 @@
 
 #ifndef KITCHEN_HPP_
     #define KITCHEN_HPP_
+    #include <string>
+    #include <queue>
+    #include "Pipe.hpp"
+    #include "Pizza.hpp"
 
-class Kitchen {
-    public:
-        Kitchen();
-        ~Kitchen();
+namespace Plazza {
 
-    private:
-        void _updateOrders(); // It happens in another thread
-};
+    class Kitchen {
+        public:
+            Kitchen(int id, Pipe &pipe);
+            ~Kitchen();
+
+            void cookPizza(void);
+
+            void addOrder(Pizza pizza);
+
+        private:
+            int _id;
+            Pipe _pipe;
+            std::queue<Pizza> _orders;
+
+            void _updateOrders();
+            std::string retrieveId(void);
+    };
+
+}
 
 #endif /* !KITCHEN_HPP_ */

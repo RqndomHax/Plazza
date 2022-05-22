@@ -7,6 +7,7 @@
 
 #ifndef PIZZA_HPP_
     #define PIZZA_HPP_
+    #include <ostream>
 
 namespace Plazza {
 
@@ -23,6 +24,22 @@ namespace Plazza {
         L = 4,
         XL = 8,
         XXL = 16
+    };
+
+    class Pizza {
+        
+        public:
+
+            Pizza(PizzaType type = Margarita, PizzaSize size = S);
+
+            PizzaType getType(void) const;
+            PizzaSize getSize(void) const;
+
+            std::string display(void) const;
+
+        private:
+            PizzaType _type;
+            PizzaSize _size;
     };
 
 }

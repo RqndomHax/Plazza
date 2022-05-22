@@ -14,15 +14,13 @@ namespace Plazza {
 
     class Order {
         public:
-            Order(PizzaType pizzaType, PizzaSize pizzaSize, int quantity);
+            Order(Pizza pizza, int quantity);
 
-            PizzaType getPizzaType();
-            PizzaSize getPizzaSize();
-            int getQuantity();
+            Pizza getPizza(void) const;
+            int getQuantity(void) const;
 
         private:
-            PizzaType _pizzaType;
-            PizzaSize _pizzaSize;
+            Pizza _pizza;
             int _quantity;
     };
 

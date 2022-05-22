@@ -24,10 +24,10 @@ int main(int argc, char **argv)
         return (84);
     }
     Plazza::Settings settings = argsManager.buildSettings();
+    Plazza::Logger logger;
+    Plazza::Pipe pipe(&logger);
 
-    Plazza::Logger log;
-
-    Plazza::Pizzeria *pizzeria = new Plazza::Pizzeria(settings);
+    Plazza::Pizzeria *pizzeria = new Plazza::Pizzeria(settings, &logger, pipe);
     Plazza::getPizzeria(pizzeria);
     Plazza::ShellManager().runShell();
     delete pizzeria;

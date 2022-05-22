@@ -30,13 +30,16 @@ namespace Plazza {
                         std::string const _message;
                 };
 
-
             void log(std::string content);
+            std::ofstream &getLogFile(void);
+            Logger& operator<<(std::string const &content);
 
         private:
             std::ofstream _logFile;
 
-            std::string _getCurrentDate(void);
+            std::string _getCurrentDate(void) const;
+
+            std::string _getCurrentTime(void) const;
     };
 
 }

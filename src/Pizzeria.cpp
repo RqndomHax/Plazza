@@ -8,16 +8,21 @@
 #include <algorithm>
 #include <iostream>
 #include <Pizzeria.hpp>
+#include <Kitchen.hpp>
 
 namespace Plazza {
 
-    Pizzeria::Pizzeria(Settings settings) {
+    Pizzeria::Pizzeria(Settings &settings, Logger *logger, Pipe &pipe) {
         this->_settings = settings;
+        this->_pipe = pipe;
         this->_nextId = 1;
+
+        this->_logger = logger;
+        *this->_logger << "Pizzeria initialized!";
+        Kitchen kitchen(0, pipe);
     }
 
     void Pizzeria::dispatchOrder(Order order) {
-        std::cerr << "Size = " << order.getPizzaSize() << " | Type " << order.getPizzaType() << " | Quantity " << order.getQuantity() << std::endl;
         (void) order;
     }
 

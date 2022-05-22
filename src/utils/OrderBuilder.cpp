@@ -27,7 +27,7 @@ namespace Plazza {
         PizzaSize size = this->_retrieveSize();
         int quantity = this->_retrieveQuantity();
 
-        return (Order(type, size, quantity));
+        return (Order(Pizza(type, size), quantity));
     }
 
     PizzaType OrderBuilder::_retrieveType() {
