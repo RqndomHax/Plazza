@@ -9,6 +9,7 @@
 #include <fstream>
 #include <ShellManager.hpp>
 #include <OrderBuilder.hpp>
+#include <StatusPrinter.hpp>
 #include <Utils.hpp>
 
 namespace Plazza {
@@ -36,6 +37,11 @@ namespace Plazza {
     void ShellManager::_parseInput(std::string command) {
         if (command == "exit")
             throw ShellManager::Exit();
+        if (command == "status") {
+            StatusPrinter printer(this->_pizzeria);
+            printer.print();
+            return;
+        }
         for (std::string order : splitString(command, ";")) {
             try {
                 Order tmp = OrderBuilder(order, this->_pizzaManager).buildOrder();

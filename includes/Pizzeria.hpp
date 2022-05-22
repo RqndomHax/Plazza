@@ -29,7 +29,7 @@ namespace Plazza {
 
             void removeKitchen(KitchenInfo *kitchen);
 
-            void createKitchen(void);
+            KitchenInfo *createKitchen(void);
 
             Settings getSettings(void);
 
@@ -37,7 +37,21 @@ namespace Plazza {
 
             Pipe *getMasterPipe(void);
 
+            KitchenInfo *retrieveBestKitchen(void);
+
             KitchenInfo *getKitchen(int kitchenId);
+
+            std::vector<KitchenInfo *> getKitchens(void);
+
+            int getAwaitingOrders(void) const;
+
+            int getTotalOrders(void) const;
+
+            int getCompletedOrders(void) const;
+
+            void addCompletedOrders(void);
+
+            int inProgressOrders;
 
         private:
             Settings _settings;
@@ -49,6 +63,11 @@ namespace Plazza {
             int _retrieveKitchenJob(void);
 
             PizzeriaJob *_job = nullptr;
+
+            int _totalOrders;
+
+            int _completedOrders;
+
     };
 
 }

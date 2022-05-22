@@ -25,13 +25,31 @@ namespace Plazza {
 
             std::string retrieveId(void);
 
+            bool isClosed;
+
+            int getTotalOrders(void) const;
+
+            void addTotalOrder(void);
+
+            int getAwaitingOrders(void) const;
+
+            int getProcessingOrders(void) const;
+
+            void addProcessingOrder(void);
+
+            int getCompletedOrders(void) const;
+
+            void addCompletedOrder(void);
+
         private:
             int _id;
             Pipe *_pipe;
             Pipe *_masterPipe;
 
             int _ordersProcessing;
-            int _busyCooks;
+            int _ordersCompleted;
+            int _totalOrders;
+
     };
 
 }

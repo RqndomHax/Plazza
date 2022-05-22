@@ -18,6 +18,9 @@ namespace Plazza {
         this->_settings = settings;
         this->_nextId = 1;
 
+        this->_totalOrders = 0;
+        this->_completedOrders = 0;
+        this->inProgressOrders = 0;
         this->_masterPipe = new Pipe();
         this->_job = new PizzeriaJob(this);
         this->_logger = logger;
@@ -42,9 +45,11 @@ namespace Plazza {
 
     void Pizzeria::dispatchOrder(Order order) {
         for (int i = 0; i < order.getQuantity(); i++) {
-            KitchenInfo *kitchen = this->getKitchen(1);
+            KitchenInfo *kitchen = this->retrieveBestKitchen();
 
             *kitchen->getPipe() << "[COOK] " + order.getPizza().pack();
+            kitchen->addTotalOrder();
+            this->_totalOrders += 1;
         }
     }
 
@@ -53,10 +58,11 @@ namespace Plazza {
         delete kitchen;
     }
 
-    void Pizzeria::createKitchen() {
+    KitchenInfo *Pizzeria::createKitchen() {
         KitchenInfo *kitchenInfo = new KitchenInfo(this->_nextId++, new Pipe(), this->_masterPipe);
         kitchenInfo->createKitchen(this->_settings);
         this->_kitchens.push_back(kitchenInfo);
+        return (kitchenInfo);
     }
 
     Settings Pizzeria::getSettings() {
@@ -71,12 +77,57 @@ namespace Plazza {
         return (nullptr);
     }
 
+    KitchenInfo *Pizzeria::retrieveBestKitchen(void) {
+        if (this->_kitchens.size() == 0)
+            return (createKitchen());
+
+        KitchenInfo *bestKitchen = nullptr;
+
+        for (KitchenInfo *kitchen : this->_kitchens) {
+            if (kitchen->isClosed)
+                continue;
+            
+            if (kitchen->getAwaitingOrders() + kitchen->getProcessingOrders() >= this->_settings.getCooks() * 2)
+                continue;
+            if (bestKitchen == nullptr) {
+                bestKitchen = kitchen;
+                continue;
+            }
+            if (kitchen->getAwaitingOrders() + kitchen->getProcessingOrders() < bestKitchen->getAwaitingOrders() + kitchen->getProcessingOrders())
+                bestKitchen = kitchen;
+        }
+
+        if (bestKitchen == nullptr)
+            return (createKitchen());
+        return (bestKitchen);
+    }
+
+    std::vector<KitchenInfo *> Pizzeria::getKitchens(void) {
+        return (this->_kitchens);
+    }
+
     Pipe *Pizzeria::getMasterPipe(void) {
         return (this->_masterPipe);
     }
 
     Logger *Pizzeria::getLogger(void) {
         return (this->_logger);
+    }
+
+    int Pizzeria::getAwaitingOrders(void) const {
+        return (this->_totalOrders - (this->_completedOrders + this->inProgressOrders));
+    }
+
+    int Pizzeria::getTotalOrders(void) const {
+        return (this->_totalOrders);
+    }
+
+    int Pizzeria::getCompletedOrders(void) const {
+        return (this->_completedOrders);
+    }
+
+    void Pizzeria::addCompletedOrders(void) {
+        this->_completedOrders += 1;
     }
 
 }

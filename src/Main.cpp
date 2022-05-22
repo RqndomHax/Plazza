@@ -27,7 +27,6 @@ int main(int argc, char **argv)
     Plazza::Logger logger;
 
     Plazza::Pizzeria *pizzeria = new Plazza::Pizzeria(settings, &logger);
-    pizzeria->createKitchen();
     Plazza::ShellManager(pizzeria).runShell();
     delete pizzeria;
     return (0);

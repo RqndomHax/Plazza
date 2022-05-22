@@ -40,21 +40,23 @@ namespace Plazza {
         (void) cookId;
         (void) pizza;
         (void) kitchen;
-        std::cout << "Pizza is being prepared" << std::endl;
+        kitchen->addProcessingOrder();
+        this->_jobOwner->inProgressOrders += 1;
     }
 
     void PizzeriaJob::_cookFinished(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
         (void) cookId;
         (void) pizza;
         (void) kitchen;
-        std::cout << "Pizza is finished" << std::endl;
+        this->_jobOwner->inProgressOrders -= 1;
+        this->_jobOwner->addCompletedOrders();
+        kitchen->addCompletedOrder();
     }
 
     void PizzeriaJob::_cookIngredients(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
         (void) cookId;
         (void) pizza;
         (void) kitchen;
-        std::cout << "Cook need ingredients" << std::endl;
     }
 
     void PizzeriaJob::_kitchenInitialized(KitchenInfo *kitchen) {
@@ -63,7 +65,7 @@ namespace Plazza {
 
     void PizzeriaJob::_kitchenClosed(KitchenInfo *kitchen) {
         *this->_jobOwner->getLogger() << kitchen->retrieveId() + "Kitchen closed.";
-        this->_jobOwner->removeKitchen(kitchen);
+        kitchen->isClosed = true;
     }
 
     void PizzeriaJob::_restart(void) {

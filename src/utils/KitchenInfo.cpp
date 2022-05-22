@@ -15,8 +15,11 @@ namespace Plazza {
         this->_pipe = pipe;
         this->_masterPipe = masterPipe;
 
-        this->_busyCooks = 0;
         this->_ordersProcessing = 0;
+        this->_totalOrders = 0;
+        this->_ordersCompleted = 0;
+
+        this->isClosed = false;
     }
 
     void KitchenInfo::createKitchen(Settings settings) {
@@ -42,6 +45,36 @@ namespace Plazza {
 
     std::string KitchenInfo::retrieveId() {
         return ("[" + std::to_string(this->_id) + "]");
+    }
+
+
+    int KitchenInfo::getTotalOrders(void) const{
+        return (this->_totalOrders);
+    }
+
+    void KitchenInfo::addTotalOrder(void) {
+        this->_totalOrders += 1;
+    }
+
+    int KitchenInfo::getAwaitingOrders(void) const {
+        return (this->_totalOrders - (this->_ordersCompleted + this->_ordersProcessing));
+    }
+
+    int KitchenInfo::getProcessingOrders(void) const {
+        return (this->_ordersProcessing);
+    }
+
+    void KitchenInfo::addProcessingOrder(void) {
+        this->_ordersProcessing += 1;
+    }
+
+    int KitchenInfo::getCompletedOrders(void) const {
+        return (this->_ordersCompleted);
+    }
+
+    void KitchenInfo::addCompletedOrder(void) {
+        this->_ordersProcessing -= 1;
+        this->_ordersCompleted += 1;
     }
 
 }
