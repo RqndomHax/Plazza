@@ -14,11 +14,14 @@
 
 namespace Plazza {
 
+    class Job;
+
     class Kitchen {
         public:
             Kitchen(int id, Pipe &pipe);
             ~Kitchen();
 
+            void run(void);
             void cookPizza(void);
 
             void addOrder(Pizza pizza);
@@ -27,6 +30,7 @@ namespace Plazza {
             int _id;
             Pipe _pipe;
             std::queue<Pizza> _orders;
+            std::vector<Job *> _jobs;
 
             void _updateOrders();
             std::string retrieveId(void);

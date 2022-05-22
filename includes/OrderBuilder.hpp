@@ -8,12 +8,13 @@
 #ifndef ORDERBUILDER_HPP_
     #define ORDERBUILDER_HPP_
     #include "Order.hpp"
+    #include "PizzaManager.hpp"
 
 namespace Plazza {
 
     class OrderBuilder {
         public:
-            OrderBuilder(std::string order);
+            OrderBuilder(std::string order, PizzaManager manager);
 
             Order buildOrder();
 
@@ -35,7 +36,9 @@ namespace Plazza {
             std::string _rawSize;
             std::string _rawQuantity;
 
-            PizzaType _retrieveType();
+            PizzaManager _manager;
+
+            Pizza _retrievePizza();
             PizzaSize _retrieveSize();
             int _retrieveQuantity();
     };

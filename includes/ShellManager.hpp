@@ -8,6 +8,7 @@
 #ifndef SHELLMANAGER_HPP_
     #define SHELLMANAGER_HPP_
     #include <string>
+    #include "PizzaManager.hpp"
     #include "Pizzeria.hpp"
 
 namespace Plazza {
@@ -36,6 +37,8 @@ namespace Plazza {
 
         private:
             void _parseInput(std::string command);
+
+            PizzaManager _pizzaManager;
     };
 
 }

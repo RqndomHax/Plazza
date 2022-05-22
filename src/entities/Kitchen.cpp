@@ -6,6 +6,7 @@
 */
 
 #include <Kitchen.hpp>
+#include <Job.hpp>
 
 namespace Plazza {
 
@@ -18,6 +19,10 @@ namespace Plazza {
     }
 
     Kitchen::~Kitchen() {
+        for (Job *job : this->_jobs)
+            if (job != nullptr)
+                delete job;
+        this->_jobs.clear();
     }
 
     void Kitchen::cookPizza(void) {
@@ -27,7 +32,7 @@ namespace Plazza {
         Pizza pizza = this->_orders.front();
         this->_orders.pop();
 
-        this->_pipe << this->retrieveId() + pizza.display() + " cooking.";
+        this->_pipe << this->retrieveId() + pizza.pack() + " cooking.";
     }
     
     void Kitchen::addOrder(Pizza pizza) {

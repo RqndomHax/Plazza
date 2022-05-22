@@ -9,8 +9,9 @@
 
 namespace Plazza {
 
-    Pizza::Pizza(PizzaType type, PizzaSize size) {
+    Pizza::Pizza(PizzaType type, std::vector<Ingredients> ingredients, PizzaSize size) {
         this->_type = type;
+        this->_ingredients = ingredients;
         this->_size = size;
     }
 
@@ -18,43 +19,52 @@ namespace Plazza {
         return (this->_type);
     }
 
+    std::vector<Ingredients> Pizza::getIngredients(void) const {
+        return (this->_ingredients);
+    }
+
     PizzaSize Pizza::getSize(void) const {
         return (this->_size);
     }
 
-    std::string Pizza::display(void) const {
+    void Pizza::setSize(PizzaSize size) {
+        this->_size = size;
+    }
+
+    std::string Pizza::pack(void) const {
         std::string content = "";
-        switch (this->getType()) {
-            case Regina:
-                content += "regina of size ";
+
+        switch (this->getSize()) {
+            case S:
+                content += "small ";
                 break;
-            case Margarita:
-                content += "margarita of size ";
+            case M:
+                content += "medium ";
                 break;
-            case Americana:
-                content += "americana of size ";
+            case L:
+                content += "large ";
                 break;
-            case Fantasia:
-                content += "fantasia of size ";
+            case XL:
+                content += "extra large";
+                break;
+            case XXL:
+                content += "extra extra large ";
                 break;
             default: break;
         }
 
-        switch (this->getSize()) {
-            case S:
-                content += "S";
+        switch (this->getType()) {
+            case Regina:
+                content += "regina";
                 break;
-            case M:
-                content += "M";
+            case Margarita:
+                content += "margarita";
                 break;
-            case L:
-                content += "L";
+            case Americana:
+                content += "americana";
                 break;
-            case XL:
-                content += "XL";
-                break;
-            case XXL:
-                content += "XXL";
+            case Fantasia:
+                content += "fantasia";
                 break;
             default: break;
         }

@@ -37,7 +37,7 @@ namespace Plazza {
             throw ShellManager::Exit();
         for (std::string order : splitString(command, ";")) {
             try {
-                Order tmp = OrderBuilder(order).buildOrder();
+                Order tmp = OrderBuilder(order, this->_pizzaManager).buildOrder();
 
                 if (tmp.getQuantity() > 0)
                     getPizzeria(nullptr)->dispatchOrder(tmp);

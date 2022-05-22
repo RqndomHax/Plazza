@@ -7,7 +7,8 @@
 
 #ifndef PIZZA_HPP_
     #define PIZZA_HPP_
-    #include <ostream>
+    #include <vector>
+    #include <string>
 
 namespace Plazza {
 
@@ -26,19 +27,37 @@ namespace Plazza {
         XXL = 16
     };
 
+    enum Ingredients {
+        DOE,
+        TOMATO,
+        GRUYERE,
+        EGGPLANT,
+        HAM,
+        MUSHROOMS,
+        STEAK,
+        GOAT_CHEESE,
+        CHIEF_LOVE
+    };
+
     class Pizza {
         
         public:
 
-            Pizza(PizzaType type = Margarita, PizzaSize size = S);
+            Pizza(PizzaType type = Margarita, std::vector<Ingredients> ingredients = {}, PizzaSize size = S);
 
             PizzaType getType(void) const;
+
+            std::vector<Ingredients> getIngredients(void) const;
+
             PizzaSize getSize(void) const;
 
-            std::string display(void) const;
+            void setSize(PizzaSize size);
+
+            std::string pack(void) const;
 
         private:
             PizzaType _type;
+            std::vector<Ingredients> _ingredients;
             PizzaSize _size;
     };
 

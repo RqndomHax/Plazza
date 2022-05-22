@@ -12,34 +12,29 @@
 
 namespace Plazza {
 
-    OrderBuilder::OrderBuilder(std::string order) {
+    OrderBuilder::OrderBuilder(std::string order, PizzaManager manager) {
         std::vector<std::string> infos = splitString(order, " ");
 
         if (infos.size() != 3)
             throw OrderBuilder::Error("Format: PizzaType PizzaSize Quantity");
+        this->_manager = manager;
         this->_rawType = infos[0];
         this->_rawSize = infos[1];
         this->_rawQuantity = infos[2];
     }
 
     Order OrderBuilder::buildOrder() {
-        PizzaType type = this->_retrieveType();
-        PizzaSize size = this->_retrieveSize();
+        Pizza pizza = this->_retrievePizza();
+        pizza.setSize(this->_retrieveSize());
         int quantity = this->_retrieveQuantity();
 
-        return (Order(Pizza(type, size), quantity));
+        return (Order(pizza, quantity));
     }
 
-    PizzaType OrderBuilder::_retrieveType() {
-        if (this->_rawType == "regina")
-            return (PizzaType::Regina);
-        if (this->_rawType == "margarita")
-            return (PizzaType::Margarita);
-        if (this->_rawType == "americana")
-            return (PizzaType::Americana);
-        if (this->_rawType == "fantasia")
-            return (PizzaType::Fantasia);
-        throw OrderBuilder::Error("Incorrect pizza type.");
+    Pizza OrderBuilder::_retrievePizza() {
+        if (this->_manager.getPizzas().count(this->_rawType) == 0)
+            throw OrderBuilder::Error("Incorrect or Unknown pizza type.");
+        return (this->_manager.getPizzas()[this->_rawType]);
     }
 
     PizzaSize OrderBuilder::_retrieveSize() {
