@@ -15,7 +15,7 @@ namespace Plazza {
 
     class Pipe {
         public:
-            Pipe(Logger *logger = nullptr);
+            Pipe();
             ~Pipe();
 
             class Error : public std::exception {
@@ -35,11 +35,13 @@ namespace Plazza {
 
             int getWriteFileDescriptor() const;
 
+            std::string &operator>>(std::string &content);
+
             std::string operator<<(std::string content);
+
             std::ostream& operator<<(std::ostream &os);
 
         private:
-            Logger *_logger;
             int _readFd;
             int _writeFd;
     };

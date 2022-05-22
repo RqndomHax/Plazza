@@ -7,20 +7,18 @@
 
 #ifndef JOB_HPP_
     #define JOB_HPP_
-    #include "Kitchen.hpp"
-    #include "Pizza.hpp"
+    #include <thread>
 
 namespace Plazza {
 
+    template<class Owner>
     class Job {
         public:
-            Job(Kitchen *owner);
-            ~Job();
+            virtual ~Job() = default;
 
-            void runJob(Pizza pizza);
-        private:
-            Kitchen *_owner;
-            Pizza pizza;
+            virtual void runJob(void) = 0;
+
+            virtual void joinThread(void) = 0;
     };
 
 }

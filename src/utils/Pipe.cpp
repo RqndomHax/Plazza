@@ -12,11 +12,7 @@
 
 namespace Plazza {
 
-    Pipe::Pipe(Logger *logger) {
-        this->_logger = logger;
-        if (logger == nullptr)
-            return;
-
+    Pipe::Pipe() {
         int descriptors[2];
 
         if (pipe(descriptors) == -1)
@@ -26,6 +22,8 @@ namespace Plazza {
     }
 
     Pipe::~Pipe() {
+        close(this->_readFd);
+        close(this->_writeFd);
     }
 
     int Pipe::getReadFileDescriptor() const {
@@ -36,9 +34,22 @@ namespace Plazza {
         return (this->_writeFd);
     }
 
+    std::string &Pipe::operator>>(std::string &content) {
+        char byte;
+
+        while (read(this->_readFd, &byte, 1) == 1) {
+            if (byte == '\n')
+                return (content);
+            content += byte;
+        }
+        return (content);
+    }
+
     std::string Pipe::operator<<(std::string content) {
+        write(this->_writeFd, content.c_str(), content.size());
+        write(this->_writeFd, "\n", 1);
         dprintf(this->_writeFd, "%s\n", content.c_str());
-        *this->_logger << content.c_str();
+        //*this->_logger << content.c_str();
         return (content);
     }
 
@@ -47,7 +58,7 @@ namespace Plazza {
         ss << os.rdbuf();
         std::string content = ss.str();
         dprintf(this->_writeFd, "%s\n", content.c_str());
-        *this->_logger << content.c_str();
+        //*this->_logger << content.c_str();
         return (os);
     }
 

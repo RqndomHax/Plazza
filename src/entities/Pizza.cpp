@@ -34,37 +34,37 @@ namespace Plazza {
     std::string Pizza::pack(void) const {
         std::string content = "";
 
-        switch (this->getSize()) {
-            case S:
-                content += "small ";
+        switch (this->getType()) {
+            case Regina:
+                content += "regina_";
                 break;
-            case M:
-                content += "medium ";
+            case Margarita:
+                content += "margarita_";
                 break;
-            case L:
-                content += "large ";
+            case Americana:
+                content += "americana_";
                 break;
-            case XL:
-                content += "extra large";
-                break;
-            case XXL:
-                content += "extra extra large ";
+            case Fantasia:
+                content += "fantasia_";
                 break;
             default: break;
         }
 
-        switch (this->getType()) {
-            case Regina:
-                content += "regina";
+        switch (this->getSize()) {
+            case S:
+                content += "S";
                 break;
-            case Margarita:
-                content += "margarita";
+            case M:
+                content += "M";
                 break;
-            case Americana:
-                content += "americana";
+            case L:
+                content += "L";
                 break;
-            case Fantasia:
-                content += "fantasia";
+            case XL:
+                content += "XL";
+                break;
+            case XXL:
+                content += "XXL";
                 break;
             default: break;
         }

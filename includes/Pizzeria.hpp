@@ -12,12 +12,17 @@
     #include "Order.hpp"
     #include "Logger.hpp"
     #include "Pipe.hpp"
+    #include "Job.hpp"
 
 namespace Plazza {
 
+    class PizzeriaJob;
+
     class Pizzeria {
         public:
-            Pizzeria(Settings &settings, Logger *logger, Pipe &pipe);
+            Pizzeria(Settings &settings, Logger *logger);
+
+            ~Pizzeria();
 
             void dispatchOrder(Order order);
 
@@ -31,10 +36,13 @@ namespace Plazza {
 
         private:
             Settings _settings;
-            Pipe _pipe;
-            std::vector<int> _kitchensId;
+            std::vector<Job<Pizzeria> *> _jobs;
             int _nextId;
             Logger *_logger;
+
+            int _retrieveKitchenJob(void);
+
+            PizzeriaJob *_getJob(int kitchenId);
     };
 
     Pizzeria *getPizzeria(void *pizzeria);
