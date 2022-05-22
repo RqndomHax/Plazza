@@ -12,10 +12,12 @@
 
 namespace Plazza {
 
-    class KitchenOrder : public Job<Kitchen> {
+    class KitchenJob : public Job<Kitchen> {
         public:
-            KitchenOrder(Kitchen *jobOwner);
-            ~KitchenOrder() override;
+            KitchenJob(Kitchen *jobOwner);
+            ~KitchenJob() override;
+
+            void _restart(void);
 
             void runJob(void) override;
 

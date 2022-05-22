@@ -8,18 +8,25 @@
 #include <iostream>
 #include <thread>
 #include <KitchenJob.hpp>
+#include <Utils.hpp>
 
 namespace Plazza {
 
-    KitchenOrder::KitchenOrder(Kitchen *jobOwner) {
+    KitchenJob::KitchenJob(Kitchen *jobOwner) {
         this->_jobOwner = jobOwner;
-        this->_thread = std::thread(&KitchenOrder::runJob, this);
+        this->_thread = std::thread(&KitchenJob::runJob, this);
     }
 
-    KitchenOrder::~KitchenOrder() {
+    KitchenJob::~KitchenJob() {
     }
 
-    void KitchenOrder::runJob(void) {
+    void KitchenJob::_restart(void) {
+        if (!this->_jobOwner->isActive())
+            return;
+        this->runJob();
+    }
+
+    void KitchenJob::runJob(void) {
         if (this->_jobOwner == nullptr)
             return;
 
@@ -27,30 +34,16 @@ namespace Plazza {
 
         *this->_jobOwner->getIPC() >> line;
 
-        if (this->_isTarget(line))
-            std::cout << "order asked !" << std::endl;
+        if (!stringStartsWith("[COOK]", line))
+            return (_restart());
+
+        std::cout << "order asked !" << std::endl;
 
         if (this->_jobOwner->isActive())
             this->runJob();
     }
 
-    bool KitchenOrder::_isTarget(std::string line) {
-
-        std::size_t start = line.find('[');
-        std::size_t end = line.find(']');
-
-        if (start == std::string::npos || end == std::string::npos)
-            return (false);
-        
-        std::string target = line.substr(start, end);
-
-        std::cout << "target = [" << target << "]" << std::endl;
-        if (target == "[COOK " + std::to_string(this->_jobOwner->getId()) + "]")
-            return (true);
-        return (false);
-    }
-
-    void KitchenOrder::joinThread(void) {
+    void KitchenJob::joinThread(void) {
         this->_thread.join();
     }
 

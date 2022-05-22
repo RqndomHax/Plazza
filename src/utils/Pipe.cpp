@@ -9,6 +9,7 @@
 #include <Pipe.hpp>
 #include <Utils.hpp>
 #include <sstream>
+#include <iostream>
 
 namespace Plazza {
 
@@ -46,8 +47,6 @@ namespace Plazza {
     }
 
     std::string Pipe::operator<<(std::string content) {
-        write(this->_writeFd, content.c_str(), content.size());
-        write(this->_writeFd, "\n", 1);
         dprintf(this->_writeFd, "%s\n", content.c_str());
         //*this->_logger << content.c_str();
         return (content);

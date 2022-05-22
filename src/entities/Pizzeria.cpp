@@ -24,7 +24,8 @@ namespace Plazza {
     Pizzeria::~Pizzeria() {
         for (Job<Pizzeria> *tmp : this->_jobs) {
             PizzeriaJob *job = dynamic_cast<PizzeriaJob *>(tmp);
-            *job->getPipe() << "[EXIT " + std::to_string(job->getId()) + "]";
+            job->joinThread();
+            *job->getPipe() << "[EXIT]";
             delete job;
         }
         this->_jobs.clear();

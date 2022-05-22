@@ -20,7 +20,7 @@ namespace Plazza {
 
         this->_isActive = true;
         *pipe << this->retrieveId() + "Kitchen initialized.";
-        this->_orderHandler = new KitchenOrder(this);
+        this->_orderHandler = new KitchenJob(this);
         this->_handleKitchen();
     }
 
@@ -36,7 +36,6 @@ namespace Plazza {
             delete this->_orderHandler;
         }
 
-        this->_orderHandler = nullptr;
         this->_cooks.clear();
     }
 
@@ -60,14 +59,9 @@ namespace Plazza {
         while (this->_isActive) {
             std::string line = "";
 
-            std::cout << "reading line..." << std::endl;
-
-            using namespace std::chrono_literals;
             *this->_pipe >> line;
-            std::this_thread::sleep_for(100ms);
 
-            std::cout << "kitchen main [" << line << "]" << std::endl;
-            if (line == "[EXIT " + std::to_string(this->_id) + "]")
+            if (line == "[EXIT]")
                 this->_isActive = false;
         }
         std::exit(0);
