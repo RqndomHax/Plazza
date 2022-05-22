@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2022
 ** B-CCP-400-MPL-4-1-theplazza-paul.comte
 ** File description:
-** KitchenOrder
+** KitchenJob
 */
 
-#ifndef KITCHENORDER_HPP_
-    #define KITCHENORDER_HPP_
+#ifndef KITCHENJOB_HPP_
+    #define KITCHENJOB_HPP_
     #include "Job.hpp"
     #include "Kitchen.hpp"
 
@@ -37,4 +37,4 @@ namespace Plazza {
 
 }
 
-#endif /* !KITCHENORDER_HPP_ */
+#endif /* !KITCHENJOB_HPP_ */

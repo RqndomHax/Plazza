@@ -13,6 +13,7 @@
 #include <Job.hpp>
 #include <KitchenJob.hpp>
 #include <ChefJob.hpp>
+#include <RefillerJob.hpp>
 
 namespace Plazza {
 
@@ -23,11 +24,14 @@ namespace Plazza {
         this->_settings = settings;
 
         this->_isActive = true;
+        this->updateClock = false;
 
-        this->_fillIngredients();
+        for (int i = 0; i < 5; i++)
+            this->fillIngredients();
         this->_createCooks();
 
         this->_orderHandler = new KitchenJob(this);
+        this->_refiller = new RefillerJob(this);
         *masterPipe << this->retrieveId() + "Kitchen initialized.";
         this->_handleKitchen();
     }
@@ -39,10 +43,15 @@ namespace Plazza {
                 job->joinThread();
                 delete job;
             }
-
+        
         if (this->_orderHandler != nullptr) {
             this->_orderHandler->joinThread();
             delete this->_orderHandler;
+        }
+
+        if (this->_refiller != nullptr) {
+            this->_refiller->joinThread();
+            delete (this->_refiller);
         }
 
         while (!this->_orders.empty()) {
@@ -54,7 +63,7 @@ namespace Plazza {
         *this->_masterPipe << this->retrieveId() + "Kitchen closed.";
     }
 
-    void Kitchen::_fillIngredients(void) {
+    void Kitchen::fillIngredients(void) {
         for (int i = 0; i < 5; i++) {
             this->_ingredients.push_back(DOE);
             this->_ingredients.push_back(TOMATO);
@@ -109,23 +118,19 @@ namespace Plazza {
         this->_orders.push(pizza);
     }
 
-    bool Kitchen::_updateOrders(void) {
-        bool hasUpdated = false;
+    void Kitchen::_updateOrders(void) {
 
         for (Job<Kitchen> *job : this->_cooks) {
             ChefJob *cook = dynamic_cast<ChefJob *>(job);
 
             if (this->_orders.empty())
-                return (hasUpdated);
+                return;
 
             if (!cook->hasPizza()) {
                 cook->setPizza(this->_orders.front());
                 this->_orders.pop();
-                hasUpdated = true;
             }
         }
-
-        return (hasUpdated);
     }
 
     void Kitchen::_handleKitchen() {
@@ -134,6 +139,13 @@ namespace Plazza {
             auto t_end = std::chrono::high_resolution_clock::now();
 
             double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
+
+            this->mutex.lock();
+            if (this->updateClock) {
+                this->updateClock = false;
+                t_start = t_end;
+            }
+            this->mutex.unlock();
 
             if (elapsed_time_ms >= 5000) {
                 this->_isActive = false;
@@ -145,8 +157,7 @@ namespace Plazza {
             if (this->_orders.empty())
                 continue;
 
-            if (this->_updateOrders())
-                t_start = t_end;
+            this->_updateOrders();
         }
         this->~Kitchen();
         std::exit(0);

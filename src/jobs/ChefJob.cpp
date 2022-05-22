@@ -58,11 +58,10 @@ namespace Plazza {
             if (this->_currentPizza == nullptr)
                 continue;
 
-            if (!_hasIngredients()) {
-                std::cout << "not enough ingredients !" << std::endl;
+            if (!_hasIngredients())
                 continue;
-            }
             this->_jobOwner->mutex.lock();
+            this->_jobOwner->updateClock = true;
             this->_takeIngredients();
             this->_jobOwner->mutex.unlock();
 

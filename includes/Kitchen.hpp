@@ -43,7 +43,11 @@ namespace Plazza {
 
             Settings getSettings();
 
+            void fillIngredients(void);
+
             void pushOrder(Pizza *pizza);
+
+            bool updateClock;
 
         private:
             int _id;
@@ -53,16 +57,18 @@ namespace Plazza {
 
 
             std::queue<Pizza *> _orders;
-            Job<Kitchen> *_orderHandler;
+
+            Job<Kitchen> *_refiller = nullptr;
+            Job<Kitchen> *_orderHandler = nullptr;
             std::vector<Job<Kitchen> *> _cooks;
 
             std::list<Ingredients> _ingredients;
 
             bool _isActive;
             void _handleKitchen(void);
-            bool _updateOrders(void);
 
-            void _fillIngredients(void);
+            void _updateOrders(void);
+
             void _createCooks(void);
     };
 
