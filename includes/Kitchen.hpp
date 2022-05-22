@@ -39,7 +39,7 @@ namespace Plazza {
 
             int getId() const;
 
-            std::list<Ingredients> &getAvailableIngredients();
+            std::list<Ingredients> *getAvailableIngredients();
 
             Settings getSettings();
 

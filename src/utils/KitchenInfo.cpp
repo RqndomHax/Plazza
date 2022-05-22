@@ -41,7 +41,7 @@ namespace Plazza {
     }
 
     std::string KitchenInfo::retrieveId() {
-        return ("[" + std::to_string(this->_id) + "] ");
+        return ("[" + std::to_string(this->_id) + "]");
     }
 
 }

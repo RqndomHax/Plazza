@@ -33,9 +33,14 @@ namespace Plazza {
             Pizza *_currentPizza;
             std::thread _thread;
 
+            bool _statusIngredient;
+
             bool _hasIngredients(void);
             void _takeIngredients(void);
             std::string _retrieveId(void);
+            std::string _getPizza(void);
+
+            bool _isPresent(Ingredients target);
     };
 
 }

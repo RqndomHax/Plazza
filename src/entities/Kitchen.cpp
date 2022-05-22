@@ -26,6 +26,8 @@ namespace Plazza {
         this->_isActive = true;
         this->updateClock = false;
 
+        this->_ingredients = {};
+
         for (int i = 0; i < 5; i++)
             this->fillIngredients();
         this->_createCooks();
@@ -64,21 +66,19 @@ namespace Plazza {
     }
 
     void Kitchen::fillIngredients(void) {
-        for (int i = 0; i < 5; i++) {
-            this->_ingredients.push_back(DOE);
-            this->_ingredients.push_back(TOMATO);
-            this->_ingredients.push_back(GRUYERE);
-            this->_ingredients.push_back(EGGPLANT);
-            this->_ingredients.push_back(HAM);
-            this->_ingredients.push_back(MUSHROOMS);
-            this->_ingredients.push_back(STEAK);
-            this->_ingredients.push_back(GOAT_CHEESE);
-            this->_ingredients.push_back(CHIEF_LOVE);
-        }
+        this->_ingredients.push_back(DOE);
+        this->_ingredients.push_back(TOMATO);
+        this->_ingredients.push_back(GRUYERE);
+        this->_ingredients.push_back(EGGPLANT);
+        this->_ingredients.push_back(HAM);
+        this->_ingredients.push_back(MUSHROOMS);
+        this->_ingredients.push_back(STEAK);
+        this->_ingredients.push_back(GOAT_CHEESE);
+        this->_ingredients.push_back(CHIEF_LOVE);
     }
 
-    std::list<Ingredients> &Kitchen::getAvailableIngredients(void) {
-        return (this->_ingredients);
+    std::list<Ingredients> *Kitchen::getAvailableIngredients(void) {
+        return (&this->_ingredients);
     }
 
     void Kitchen::_createCooks(void) {
@@ -107,7 +107,7 @@ namespace Plazza {
     }
 
     std::string Kitchen::retrieveId() {
-        return ("[" + std::to_string(this->_id) + "] ");
+        return (std::to_string(this->_id) + "/");
     }
 
     int Kitchen::getId() const {

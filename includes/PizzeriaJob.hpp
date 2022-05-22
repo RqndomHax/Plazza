@@ -37,8 +37,8 @@ namespace Plazza {
             void _kitchenClosed(KitchenInfo *kitchen);
 
             void _cookPreparing(int cookId, Pizza *pizza, KitchenInfo *kitchen);
-
-            int _getId(std::string line);
+            void _cookFinished(int cookId, Pizza *pizza, KitchenInfo *kitchen);
+            void _cookIngredients(int cookId, Pizza *pizza, KitchenInfo *kitchen);
 
             void _setKitchenEvents(void);
             void _setCookEvents(void);

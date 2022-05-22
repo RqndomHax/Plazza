@@ -7,6 +7,7 @@
 
 #include <PizzeriaJob.hpp>
 #include <iostream>
+#include <Utils.hpp>
 
 namespace Plazza {
 
@@ -30,7 +31,9 @@ namespace Plazza {
     }
 
     void PizzeriaJob::_setCookEvents(void) {
-        this->_cookEvents["Cook preparing"] = &PizzeriaJob::_cookPreparing;
+        this->_cookEvents["Cooking"] = &PizzeriaJob::_cookPreparing;
+        this->_cookEvents["Cooking finished"] = &PizzeriaJob::_cookFinished;
+        this->_cookEvents["Cook need ingredients"] = &PizzeriaJob::_cookIngredients;
     }
 
     void PizzeriaJob::_cookPreparing(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
@@ -40,12 +43,25 @@ namespace Plazza {
         std::cout << "Pizza is being prepared" << std::endl;
     }
 
+    void PizzeriaJob::_cookFinished(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
+        (void) cookId;
+        (void) pizza;
+        (void) kitchen;
+        std::cout << "Pizza is finished" << std::endl;
+    }
+
+    void PizzeriaJob::_cookIngredients(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
+        (void) cookId;
+        (void) pizza;
+        (void) kitchen;
+        std::cout << "Cook need ingredients" << std::endl;
+    }
+
     void PizzeriaJob::_kitchenInitialized(KitchenInfo *kitchen) {
         *this->_jobOwner->getLogger() << kitchen->retrieveId() + "Kitchen initialized.";
     }
 
     void PizzeriaJob::_kitchenClosed(KitchenInfo *kitchen) {
-        std::cout << "closed" << std::endl;
         *this->_jobOwner->getLogger() << kitchen->retrieveId() + "Kitchen closed.";
         this->_jobOwner->removeKitchen(kitchen);
     }
@@ -56,22 +72,18 @@ namespace Plazza {
         this->runJob();
     }
 
-    int PizzeriaJob::_getId(std::string line) {
-        std::size_t pos1 = line.find('[');
-        std::size_t pos2 = line.find(']');
-
-        if (pos1 == std::string::npos || pos2 == std::string::npos)
-            return (-1);
-        return (std::atoi(line.substr(pos1 + 1, pos2).c_str()));
-    }
-
     void PizzeriaJob::_checkKitchenEvents(std::string line) {
-        KitchenInfo *kitchen = this->_jobOwner->getKitchen(this->_getId(line));
+        std::vector<std::string> content = splitString(line, "/");
+
+        if (content.size() != 2)
+            return;
+
+        KitchenInfo *kitchen = this->_jobOwner->getKitchen(std::atoi(content[0].c_str()));
 
         if (kitchen == nullptr)
             return;
 
-        std::string parsed = line.substr(line.find(']') + 2);
+        std::string parsed = content[1];
         parsed.pop_back();
 
         void (PizzeriaJob::*func)(KitchenInfo *infos) = this->_kitchenEvents[parsed];
@@ -80,22 +92,35 @@ namespace Plazza {
     }
     
     void PizzeriaJob::_checkCookEvents(std::string line) {
-        KitchenInfo *kitchen = this->_jobOwner->getKitchen(this->_getId(line));
+        std::vector<std::string> content = splitString(line, "/");
+
+        if (content.size() != 4)
+            return;
+
+        KitchenInfo *kitchen = this->_jobOwner->getKitchen(std::atoi(content[0].c_str()));
 
         if (kitchen == nullptr)
             return;
         
-        std::string tmp = line.substr(line.find(']') + 2);
+        int cookId = std::atoi(content[1].c_str());
+        if (cookId == -1)
+            return;
+        
+        Pizza *pizza = this->_jobOwner->getSettings().getPizzaManager().unpackPizza(content[2]);
 
-        std::cout << "tmp = [" << tmp << "]" << std::endl;
+        std::string parsed = content[3];
+        parsed.pop_back();
+
+        void (PizzeriaJob::*func)(int cookId, Pizza *pizza, KitchenInfo *kitchen) = this->_cookEvents[parsed];
+        if (func != nullptr)
+           (this->*func)(cookId, pizza, kitchen);
+        delete pizza;
     }
 
     void PizzeriaJob::runJob(void) {
          std::string line = "";
 
         *this->_jobOwner->getMasterPipe() >> line;
-
-        std::cout << "master = [" << line << "]" << std::endl;
 
         this->_checkKitchenEvents(line);
         this->_checkCookEvents(line);
