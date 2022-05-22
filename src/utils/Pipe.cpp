@@ -39,11 +39,8 @@ namespace Plazza {
         char byte;
 
         while (read(this->_readFd, &byte, 1) == 1) {
-            if (byte == '\n') {
-                std::cout << "content = {" << content << "}" << std::endl;
-
+            if (byte == '\n')
                 return (content);
-            }
             content += byte;
         }
         return (content);

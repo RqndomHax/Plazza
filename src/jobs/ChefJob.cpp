@@ -2,34 +2,35 @@
 ** EPITECH PROJECT, 2022
 ** B-CCP-400-MPL-4-1-theplazza-paul.comte
 ** File description:
-** Chef
+** ChefJob
 */
 
-#include <Chef.hpp>
+#include <ChefJob.hpp>
 
 namespace Plazza {
 
-    Chef::Chef(Kitchen *jobOwner) {
+    ChefJob::ChefJob(Kitchen *jobOwner) {
         this->_jobOwner = jobOwner;
+        this->_thread = std::thread(&ChefJob::runJob, this);
     }
 
-    Chef::~Chef() {
+    ChefJob::~ChefJob() {
     }
 
-    bool Chef::hasPizza(void) {
+    bool ChefJob::hasPizza(void) {
         return (this->_currentPizza != nullptr);
     }
 
-    void Chef::setPizza(Pizza *currentPizza) {
+    void ChefJob::setPizza(Pizza *currentPizza) {
         this->_currentPizza = currentPizza;
     }
 
-    void Chef::runJob(void) {
+    void ChefJob::runJob(void) {
         
     }
 
-    void Chef::joinThread(void) {
-
+    void ChefJob::joinThread(void) {
+        this->_thread.join();
     }
 
 }

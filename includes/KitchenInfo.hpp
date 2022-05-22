@@ -23,10 +23,15 @@ namespace Plazza {
 
             Pipe *getMasterPipe(void);
 
+            std::string retrieveId(void);
+
         private:
             int _id;
             Pipe *_pipe;
             Pipe *_masterPipe;
+
+            int _ordersProcessing;
+            int _busyCooks;
     };
 
 }

@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2022
 ** B-CCP-400-MPL-4-1-theplazza-paul.comte
 ** File description:
-** Chef
+** ChefJob
 */
 
 #ifndef CHEF_HPP_
@@ -12,10 +12,10 @@
 
 namespace Plazza {
 
-    class Chef : public Job<Kitchen> {
+    class ChefJob : public Job<Kitchen> {
         public:
-            Chef(Kitchen *owner);
-            ~Chef() override;
+            ChefJob(Kitchen *owner);
+            ~ChefJob() override;
 
             bool hasPizza(void);
 
@@ -28,6 +28,7 @@ namespace Plazza {
         private:
             Kitchen *_jobOwner;
             Pizza *_currentPizza;
+            std::thread _thread;
     };
 
 }

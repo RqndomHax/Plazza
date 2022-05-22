@@ -27,27 +27,28 @@ namespace Plazza {
 
             void dispatchOrder(Order order);
 
-            void removeKitchen(int kitchenId);
+            void removeKitchen(KitchenInfo *kitchen);
 
             void createKitchen(void);
 
             Settings getSettings(void);
 
-            Logger getLogger(void);
+            Logger *getLogger(void);
 
-            Pipe getMasterPipe(void);
+            Pipe *getMasterPipe(void);
+
+            KitchenInfo *getKitchen(int kitchenId);
 
         private:
             Settings _settings;
             std::vector<KitchenInfo *> _kitchens;
             int _nextId;
-            Pipe _masterPipe;
-            Logger *_logger;
+            Pipe *_masterPipe = nullptr;
+            Logger *_logger = nullptr;
 
             int _retrieveKitchenJob(void);
 
-            KitchenInfo *_getKitchen(int kitchenId);
-            PizzeriaJob *_job;
+            PizzeriaJob *_job = nullptr;
     };
 
     Pizzeria *getPizzeria(void *pizzeria);

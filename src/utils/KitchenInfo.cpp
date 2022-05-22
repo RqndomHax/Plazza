@@ -14,6 +14,9 @@ namespace Plazza {
         this->_id = id;
         this->_pipe = pipe;
         this->_masterPipe = masterPipe;
+
+        this->_busyCooks = 0;
+        this->_ordersProcessing = 0;
     }
 
     void KitchenInfo::createKitchen(void) {
@@ -35,6 +38,10 @@ namespace Plazza {
 
     Pipe *KitchenInfo::getMasterPipe(void) {
         return (this->_masterPipe);
+    }
+
+    std::string KitchenInfo::retrieveId() {
+        return ("[" + std::to_string(this->_id) + "] ");
     }
 
 }

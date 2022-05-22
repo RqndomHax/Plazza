@@ -9,6 +9,7 @@
     #define PIZZERIAJOB_HPP_
     #include "Job.hpp"
     #include "Pizzeria.hpp"
+    #include <map>
 
 namespace Plazza {
 
@@ -25,6 +26,14 @@ namespace Plazza {
         private:
             Pizzeria *_jobOwner;
             std::thread _thread;
+
+            std::map<std::string, void (PizzeriaJob::*)(KitchenInfo *infos)> _events;
+
+            void _restart(void);
+            void _kitchenInitialized(KitchenInfo *kitchen);
+            void _kitchenClosed(KitchenInfo *kitchen);
+            int _getId(std::string line);
+            bool _isRunning;
     };
 
 }

@@ -32,7 +32,7 @@ namespace Plazza {
 
             void log(std::string content);
             std::ofstream &getLogFile(void);
-            Logger& operator<<(std::string const &content);
+            Logger& operator<<(std::string const content);
 
         private:
             std::ofstream _logFile;

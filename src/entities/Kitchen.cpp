@@ -39,6 +39,7 @@ namespace Plazza {
         }
 
         this->_cooks.clear();
+        *this->_masterPipe << this->retrieveId() + "Kitchen closed.";
     }
 
     Pipe *Kitchen::getPipe() {
@@ -70,8 +71,10 @@ namespace Plazza {
 
             if (elapsed_time_ms >= 5000) {
                 this->_isActive = false;
+                *this->_pipe << "\n";
             }
         }
+        this->~Kitchen();
         std::exit(0);
     }
 

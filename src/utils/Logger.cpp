@@ -24,7 +24,7 @@ namespace Plazza {
         this->_logFile.close();
     }
 
-    Logger& Logger::operator<<(std::string const &content) {
+    Logger& Logger::operator<<(std::string const content) {
         this->_logFile << this->_getCurrentTime() + content + "\n";
         return (*this);
     }
