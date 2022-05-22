@@ -18,15 +18,7 @@ namespace Plazza {
             IPC();
             ~IPC();
 
-            std::string read();
-            void write(std::string content);
-            std::string _buffer;
-
         private:
-            int _calls;
-            long long int _nextId;
-            long long int _currentId;
-            std::mutex _mutex;
     };
 
 }

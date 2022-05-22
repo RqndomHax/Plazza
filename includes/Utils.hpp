@@ -17,4 +17,6 @@ std::vector<std::string> splitString(std::string target, std::string dlm);
 
 bool stringStartsWith(std::string prefix, std::string target);
 
+std::string retrieveError(void);
+
 #endif /* !UTILS_HPP_ */

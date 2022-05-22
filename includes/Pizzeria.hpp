@@ -17,16 +17,14 @@ namespace Plazza {
     class Pizzeria {
         public:
             Pizzeria() {}
-            Pizzeria(Settings settings, IPC *ipc);
+            Pizzeria(Settings settings);
 
             void dispatchOrder(Order order);
             void removeKitchen(int kitchenId);
             void createKitchen();
             Settings getSettings();
-            IPC *getIPC();
         private:
             Settings _settings;
-            IPC *_ipc;
             std::vector<int> _kitchensId;
             int _nextId;
     };

@@ -11,9 +11,8 @@
 
 namespace Plazza {
 
-    Pizzeria::Pizzeria(Settings settings, IPC *ipc) {
+    Pizzeria::Pizzeria(Settings settings) {
         this->_settings = settings;
-        this->_ipc = ipc;
         this->_nextId = 1;
     }
 
@@ -36,10 +35,6 @@ namespace Plazza {
 
     Settings Pizzeria::getSettings() {
         return (this->_settings);
-    }
-
-    IPC *Pizzeria::getIPC() {
-        return (this->_ipc);
     }
 
 }
