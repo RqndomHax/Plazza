@@ -9,7 +9,7 @@ CC		= g++
 
 INCLUDE	= -I includes/
 
-CFLAGS	= -std=c++20 -Wall -Wextra -Werror -pthread
+CFLAGS	= -std=c++20 -Wall -Wextra -Werror -pthread -lncurses
 
 SRC		= $(wildcard src/*.cpp)
 
