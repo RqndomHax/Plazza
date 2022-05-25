@@ -25,15 +25,12 @@ namespace Plazza {
         cbreak();
         noecho();
         timeout(0);
-<<<<<<< HEAD
-=======
         start_color();
         init_pair(1, COLOR_BLACK, COLOR_BLUE); // black text on blue background
         init_pair(2, COLOR_BLUE, COLOR_BLACK); // blue text on black background
         init_pair(3, COLOR_RED, COLOR_WHITE); // red text on white background
         init_pair(4, COLOR_GREEN, COLOR_BLACK); // green text on black background
         init_pair(5, COLOR_CYAN, COLOR_BLACK); // cyan text on black background
->>>>>>> bonus
         keypad(stdscr, true);
     }
 
@@ -88,20 +85,14 @@ namespace Plazza {
     void DisplayManager::_printDisplay(void) {
         clear();
 
-<<<<<<< HEAD
-        this->_printKichenInfos(this->_pizzeria->getKitchen(this->_kitchenId));
-=======
         attron(COLOR_PAIR(4));
         this->_printKichenInfos(this->_pizzeria->getKitchen(this->_kitchenId));
         attron(COLOR_PAIR(5));
         this->_printInfos();
->>>>>>> bonus
         this->_printKitchens();
         refresh();
     }
 
-<<<<<<< HEAD
-=======
     int DisplayManager::_countKitchenClosed(void) const {
         int i = 0;
 
@@ -131,7 +122,6 @@ namespace Plazza {
         mvprintw(3, x+=25, "[K] - Order fantasia");
     }
 
->>>>>>> bonus
     void DisplayManager::_printKichenInfos(KitchenInfo *info) {
         if (info == nullptr)
             return;
@@ -161,8 +151,6 @@ namespace Plazza {
                 return;
             mvprintw(y += 2, 70, (*it)->pack().c_str());
         }
-<<<<<<< HEAD
-=======
         y = 5;
         mvprintw(y += 2, 112, std::string("==== QUEUED ORDERS ====").c_str());
         for (std::list<Pizza *>::iterator it = info->getAwaitingOrders()->begin(); it != info->getAwaitingOrders()->end(); it++) {
@@ -170,7 +158,6 @@ namespace Plazza {
                 return;
             mvprintw(y += 2, 112, (*it)->pack().c_str());
         }
->>>>>>> bonus
     }
 
     void DisplayManager::_printKitchens(void) {
@@ -180,8 +167,6 @@ namespace Plazza {
                 continue;
             if (y >= COLS)
                 return;
-<<<<<<< HEAD
-=======
             if (!kitchen->isClosed) {
                 attron(COLOR_PAIR(2));
                 if (kitchen->getId() == this->_kitchenId)
@@ -189,7 +174,6 @@ namespace Plazza {
             }
             else
                 attron(COLOR_PAIR(3));
->>>>>>> bonus
             mvprintw(y += 2, 2, ("Kitchen[" + std::to_string(kitchen->getId()) + "]").c_str());
         }
     }
