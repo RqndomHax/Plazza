@@ -40,10 +40,10 @@ namespace Plazza {
                    << "\tTotal"
         << std::endl;
 
-        std::cout <<   "\t\t" << this->_pizzeria->getAwaitingOrders()
-                    << "\t\t" << this->_pizzeria->inProgressOrders
-                    << "\t\t" << this->_pizzeria->getCompletedOrders()
-                    << "\t\t" << this->_pizzeria->getTotalOrders()
+        std::cout <<   "\t\t" << this->_pizzeria->getAwaitingOrders().size()
+                    << "\t\t" << this->_pizzeria->getProcessingOrders().size()
+                    << "\t\t" << this->_pizzeria->getCompletedOrders().size()
+                    << "\t\t" << this->_pizzeria->getTotalOrders().size()
         << std::endl;
     }
 
@@ -51,7 +51,6 @@ namespace Plazza {
         this->_printSeparator();
         this->_printMainInfos();
         std::cout << std::endl;
-        this->_printSeparator();
 
         for (std::size_t i = 0; i < this->_pizzeria->getKitchens().size(); i++) {
             this->_printSeparator();
@@ -88,11 +87,35 @@ namespace Plazza {
         << std::endl;
 
         std::cout <<   "\t\t" << (info->isClosed ? "Closed" : "Opened")
-                    << "\t\t\t\t" << info->getAwaitingOrders()
-                    << "\t\t" << info->getProcessingOrders()
-                    << "\t\t\t" << info->getCompletedOrders()
-                    << "\t\t\t" << info->getTotalOrders()
+                    << "\t\t" << info->getAwaitingOrders()->size()
+                    << "\t\t\t" << info->getProcessingOrders()->size()
+                    << "\t\t\t" << info->getCompletedOrders().size()
+                    << "\t\t\t" << info->getTotalOrders().size()
         << std::endl;
+
+        std::cout << "\nIngredients:"
+                   << "\tDoe "
+                   << "\t\tTomato"
+                   << "\t\tGruyere"
+                   << "\t\tEggplant"
+                   << "\tHam"
+                   << "\tMushrooms"
+                   << "\tSteak"
+                   << "\t\tGoat cheese"
+                   << "\tChief love"
+        << std::endl;
+
+        std::cout << "\t\t" << info->getIngredientsQuantity(DOE)
+                    << "\t\t" << info->getIngredientsQuantity(TOMATO)
+                    << "\t\t" << info->getIngredientsQuantity(GRUYERE)
+                    << "\t\t" << info->getIngredientsQuantity(EGGPLANT)
+                    << "\t\t" << info->getIngredientsQuantity(HAM)
+                    << "\t" << info->getIngredientsQuantity(MUSHROOMS)
+                    << "\t\t" << info->getIngredientsQuantity(STEAK)
+                    << "\t\t" << info->getIngredientsQuantity(GOAT_CHEESE)
+                    << "\t\t" << info->getIngredientsQuantity(CHIEF_LOVE)
+        << std::endl;
+
     }
 
 

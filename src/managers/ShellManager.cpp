@@ -31,6 +31,8 @@ namespace Plazza {
         } catch (ShellManager::Exit const &ignored) {
             return;
         }
+        if (this->_pizzeria->isFork)
+            return;
         runShell();
     }
 
@@ -48,6 +50,8 @@ namespace Plazza {
 
                 if (tmp.getQuantity() > 0)
                     this->_pizzeria->dispatchOrder(tmp);
+                if (this->_pizzeria->isFork)
+                    return;
             } catch (OrderBuilder::Error const &error) {
                 std::cerr << "[Shell error] " << error.what() << std::endl;
             }

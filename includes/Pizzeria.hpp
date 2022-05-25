@@ -27,6 +27,8 @@ namespace Plazza {
 
             void dispatchOrder(Order order);
 
+            void dispatchOldOrders(std::list<Pizza *> *pizzas);
+
             void removeKitchen(KitchenInfo *kitchen);
 
             KitchenInfo *createKitchen(void);
@@ -43,15 +45,23 @@ namespace Plazza {
 
             std::vector<KitchenInfo *> getKitchens(void);
 
-            int getAwaitingOrders(void) const;
+            std::list<Pizza *> getAwaitingOrders(void) const;
 
-            int getTotalOrders(void) const;
+            std::list<Pizza *> getTotalOrders(void) const;
 
-            int getCompletedOrders(void) const;
+            std::list<Pizza *> getCompletedOrders(void) const;
 
-            void addCompletedOrders(void);
+            std::list<Pizza *> getProcessingOrders(void) const;
 
-            int inProgressOrders;
+            void addCompletedOrders(Pizza *pizza);
+
+            void addProcessingOrders(Pizza *pizza);
+
+            bool isFork;
+
+            bool isActive;
+
+            std::mutex mutex;
 
         private:
             Settings _settings;
@@ -64,9 +74,10 @@ namespace Plazza {
 
             PizzeriaJob *_job = nullptr;
 
-            int _totalOrders;
-
-            int _completedOrders;
+            std::list<Pizza *> _totalOrders;
+            std::list<Pizza *> _completedOrders;
+            std::list<Pizza *> _processingOrders;
+            std::list<Pizza *> _awaitingOrders;
 
     };
 

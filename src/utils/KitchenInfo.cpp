@@ -6,7 +6,10 @@
 */
 
 #include <KitchenInfo.hpp>
+#include <Utils.hpp>
 #include <unistd.h>
+#include <iostream>
+#include <algorithm>
 
 namespace Plazza {
 
@@ -15,20 +18,34 @@ namespace Plazza {
         this->_pipe = pipe;
         this->_masterPipe = masterPipe;
 
-        this->_ordersProcessing = 0;
-        this->_totalOrders = 0;
-        this->_ordersCompleted = 0;
+        this->_ordersAwaiting = {};
+        this->_ordersProcessing = {};
+        this->_totalOrders = {};
+        this->_ordersCompleted = {};
+        this->_ingredients = {};
 
         this->isClosed = false;
+
+        for (int i = 0; i < 5; i++)
+            this->refillIngredients();
     }
 
-    void KitchenInfo::createKitchen(Settings settings) {
+    KitchenInfo::~KitchenInfo() {
+        autoClear(&this->_ordersAwaiting);
+        autoClear(&this->_ordersProcessing);
+        autoClear(&this->_ordersCompleted);
+        autoClear(&this->_totalOrders);
+    }
+
+    bool KitchenInfo::createKitchen(Settings settings) {
         int cpid = fork();
 
         if (cpid == 0) {
             Kitchen kitchen(this->_id, this->_pipe, this->_masterPipe, settings);
-            return;
+            return (true);
         }
+
+        return (false);
     }
 
     int KitchenInfo::getId(void) {
@@ -48,33 +65,80 @@ namespace Plazza {
     }
 
 
-    int KitchenInfo::getTotalOrders(void) const{
+    std::list<Pizza *> KitchenInfo::getTotalOrders(void) const{
         return (this->_totalOrders);
     }
 
-    void KitchenInfo::addTotalOrder(void) {
-        this->_totalOrders += 1;
+    void KitchenInfo::addTotalOrder(Pizza *pizza) {
+        this->_totalOrders.push_back(pizza);
     }
 
-    int KitchenInfo::getAwaitingOrders(void) const {
-        return (this->_totalOrders - (this->_ordersCompleted + this->_ordersProcessing));
+    void KitchenInfo::addAwaitingOrder(Pizza *pizza) {
+        this->_ordersAwaiting.push_back(pizza);
     }
 
-    int KitchenInfo::getProcessingOrders(void) const {
-        return (this->_ordersProcessing);
+    std::list<Pizza *> *KitchenInfo::getAwaitingOrders(void) {
+        return (&(this->_ordersAwaiting));
     }
 
-    void KitchenInfo::addProcessingOrder(void) {
-        this->_ordersProcessing += 1;
+    std::list<Pizza *> *KitchenInfo::getProcessingOrders(void) {
+        return (&(this->_ordersProcessing));
     }
 
-    int KitchenInfo::getCompletedOrders(void) const {
+    void KitchenInfo::addProcessingOrder(Pizza *pizza) {
+        if (pizza == nullptr)
+            return;
+
+        Pizza *target = autoRemoveOrder(&(this->_ordersAwaiting), pizza);
+
+        if (target == nullptr)
+            this->_ordersProcessing.push_back(new Pizza(*pizza));
+        else
+            this->_ordersProcessing.push_back(target);
+        this->_takeIngredients(pizza);
+    }
+
+    std::list<Pizza *> KitchenInfo::getCompletedOrders(void) const {
         return (this->_ordersCompleted);
     }
 
-    void KitchenInfo::addCompletedOrder(void) {
-        this->_ordersProcessing -= 1;
-        this->_ordersCompleted += 1;
+    void KitchenInfo::addCompletedOrder(Pizza *pizza) {
+        Pizza *target = autoRemoveOrder(&(this->_ordersProcessing), pizza);
+
+        if (target == nullptr)
+            this->_ordersCompleted.push_back(new Pizza(*pizza));
+        else
+            this->_ordersCompleted.push_back(target);
+    }
+
+    void KitchenInfo::_takeIngredients(Pizza *pizza) {
+        for (Ingredients ingredient : pizza->getIngredients()) {
+            std::list<Ingredients> *available = &this->_ingredients;
+            std::list<Ingredients>::iterator it = std::find(available->begin(), available->end(), ingredient);
+            if (it != available->end())
+                available->erase(it);
+        }
+    }
+
+    void KitchenInfo::refillIngredients(void) {
+        this->_ingredients.push_back(DOE);
+        this->_ingredients.push_back(TOMATO);
+        this->_ingredients.push_back(GRUYERE);
+        this->_ingredients.push_back(EGGPLANT);
+        this->_ingredients.push_back(HAM);
+        this->_ingredients.push_back(MUSHROOMS);
+        this->_ingredients.push_back(STEAK);
+        this->_ingredients.push_back(GOAT_CHEESE);
+        this->_ingredients.push_back(CHIEF_LOVE);
+    }
+
+    int KitchenInfo::getIngredientsQuantity(Ingredients ingredient) {
+        int quantity = 0;
+
+        for (Ingredients tmp : this->_ingredients)
+            if (tmp == ingredient)
+                quantity++;
+        return (quantity);
     }
 
 }

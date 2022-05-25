@@ -148,19 +148,21 @@ namespace Plazza {
             this->mutex.unlock();
 
             if (elapsed_time_ms >= 5000) {
+                this->mutex.lock();
                 this->_isActive = false;
-                this->~Kitchen();
-                std::exit(0);
+                this->mutex.unlock();
                 return;
             }
 
-            if (this->_orders.empty())
+            this->mutex.lock();
+            if (this->_orders.empty()) {
+                this->mutex.unlock();
                 continue;
+            }
 
             this->_updateOrders();
+            this->mutex.unlock();
         }
-        this->~Kitchen();
-        std::exit(0);
     }
 
 }

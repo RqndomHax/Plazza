@@ -7,10 +7,14 @@
 
 #include <string>
 
-bool stringStartsWith(std::string prefix, std::string target) {
-    if (target.size() < prefix.size())
-        return (false); 
-    if (target.substr(0, prefix.size()) != prefix)
-        return (false);
-    return (true);
+namespace Plazza {
+
+    bool stringStartsWith(std::string prefix, std::string target) {
+        if (target.size() < prefix.size())
+            return (false); 
+        if (target.substr(0, prefix.size()) != prefix)
+            return (false);
+        return (true);
+    }
+
 }

@@ -26,6 +26,7 @@ namespace Plazza {
             std::this_thread::sleep_for(std::chrono::milliseconds(replaceDuration));
             this->_jobOwner->mutex.lock();
             this->_jobOwner->fillIngredients();
+            *this->_jobOwner->getMasterPipe() << this->_jobOwner->retrieveId() + "Kitchen refilling.";
             this->_jobOwner->mutex.unlock();
         }
     }

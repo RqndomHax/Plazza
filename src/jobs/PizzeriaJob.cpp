@@ -27,6 +27,7 @@ namespace Plazza {
 
     void PizzeriaJob::_setKitchenEvents(void) {
         this->_kitchenEvents["Kitchen initialized"] = &PizzeriaJob::_kitchenInitialized;
+        this->_kitchenEvents["Kitchen refilling"] = &PizzeriaJob::_kitchenRefilling;
         this->_kitchenEvents["Kitchen closed"] = &PizzeriaJob::_kitchenClosed;
     }
 
@@ -38,20 +39,15 @@ namespace Plazza {
 
     void PizzeriaJob::_cookPreparing(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
         (void) cookId;
-        (void) pizza;
-        (void) kitchen;
-        kitchen->addProcessingOrder();
-        this->_jobOwner->inProgressOrders += 1;
+        kitchen->addProcessingOrder(pizza);
+        this->_jobOwner->addProcessingOrders(pizza);
         *this->_jobOwner->getLogger() << kitchen->retrieveId() + pizza->pack() + " preparing.";
     }
 
     void PizzeriaJob::_cookFinished(int cookId, Pizza *pizza, KitchenInfo *kitchen) {
         (void) cookId;
-        (void) pizza;
-        (void) kitchen;
-        this->_jobOwner->inProgressOrders -= 1;
-        this->_jobOwner->addCompletedOrders();
-        kitchen->addCompletedOrder();
+        this->_jobOwner->addCompletedOrders(pizza);
+        kitchen->addCompletedOrder(pizza);
         *this->_jobOwner->getLogger() << kitchen->retrieveId() + pizza->pack() + " baked.";
     }
 
@@ -65,9 +61,16 @@ namespace Plazza {
         *this->_jobOwner->getLogger() << kitchen->retrieveId() + "Kitchen initialized.";
     }
 
+    void PizzeriaJob::_kitchenRefilling(KitchenInfo *kitchen) {
+        kitchen->refillIngredients();
+    }
+
     void PizzeriaJob::_kitchenClosed(KitchenInfo *kitchen) {
         *this->_jobOwner->getLogger() << kitchen->retrieveId() + "Kitchen closed.";
         kitchen->isClosed = true;
+
+        this->_jobOwner->dispatchOldOrders(kitchen->getProcessingOrders());
+        this->_jobOwner->dispatchOldOrders(kitchen->getAwaitingOrders());
     }
 
     void PizzeriaJob::_restart(void) {
@@ -109,8 +112,11 @@ namespace Plazza {
         int cookId = std::atoi(content[1].c_str());
         if (cookId == -1)
             return;
-        
+
         Pizza *pizza = this->_jobOwner->getSettings().getPizzaManager().unpackPizza(content[2]);
+
+        if (pizza == nullptr)
+            return;
 
         std::string parsed = content[3];
         parsed.pop_back();
@@ -122,18 +128,25 @@ namespace Plazza {
     }
 
     void PizzeriaJob::runJob(void) {
-         std::string line = "";
+        std::string line = "";
 
         *this->_jobOwner->getMasterPipe() >> line;
+
+        this->_jobOwner->mutex.lock();
+
+        if (!this->_jobOwner->isActive) {
+            this->_jobOwner->mutex.unlock();
+            return;
+        }
 
         this->_checkKitchenEvents(line);
         this->_checkCookEvents(line);
 
+        this->_jobOwner->mutex.unlock();
         this->_restart();
     }
 
     void PizzeriaJob::joinThread(void) {
-        this->_isRunning = false;
         this->_thread.join();
     }
 }

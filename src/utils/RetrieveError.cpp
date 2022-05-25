@@ -8,8 +8,12 @@
 #include <string.h>
 #include <string>
 
-std::string retrieveError(void) {
-    std::string error = strerror(errno);
+namespace Plazza {
 
-    return (error);
+    std::string retrieveError(void) {
+        std::string error = strerror(errno);
+
+        return (error);
+    }
+
 }

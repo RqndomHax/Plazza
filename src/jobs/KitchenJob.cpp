@@ -30,8 +30,10 @@ namespace Plazza {
         if (!stringStartsWith("[COOK]", line))
             return;
 
+        this->_jobOwner->mutex.lock();
         Pizza *pizza = _jobOwner->getSettings().getPizzaManager().unpackPizza(line.substr(line.find(']') + 2));
         this->_jobOwner->pushOrder(pizza);
+        this->_jobOwner->mutex.unlock();
     }
 
     void KitchenJob::_checkExit(std::string line) {

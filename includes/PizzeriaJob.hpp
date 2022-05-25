@@ -34,6 +34,7 @@ namespace Plazza {
             void _restart(void);
 
             void _kitchenInitialized(KitchenInfo *kitchen);
+            void _kitchenRefilling(KitchenInfo *kitchen);
             void _kitchenClosed(KitchenInfo *kitchen);
 
             void _cookPreparing(int cookId, Pizza *pizza, KitchenInfo *kitchen);

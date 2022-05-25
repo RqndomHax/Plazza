@@ -53,16 +53,13 @@ namespace Plazza {
     }
 
     int OrderBuilder::_retrieveQuantity() {
-        char *endPtr;
         int quantity;
 
         if (stringStartsWith("x", this->_rawQuantity) == false)
             throw OrderBuilder::Error("Quantity should be defined by x[1..9][0..9]*.");
-        char const *tmpQuantity = this->_rawQuantity.substr(1).c_str();
 
-        quantity = std::strtol(tmpQuantity, &endPtr, 10);
-        if (tmpQuantity == endPtr)
-            throw OrderBuilder::Error("Quantity is not a valid integer.");
+        quantity = std::atoi(this->_rawQuantity.substr(1).c_str());
+
         if (quantity <= 0)
             throw OrderBuilder::Error("Quantity should be greater than 0.");
         return (quantity);

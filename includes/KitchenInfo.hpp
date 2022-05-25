@@ -15,7 +15,9 @@ namespace Plazza {
         public:
             KitchenInfo(int id, Pipe *pipe, Pipe *masterPipe);
 
-            void createKitchen(Settings settings);
+            ~KitchenInfo();
+
+            bool createKitchen(Settings settings);
 
             int getId(void);
             
@@ -27,28 +29,38 @@ namespace Plazza {
 
             bool isClosed;
 
-            int getTotalOrders(void) const;
+            std::list<Pizza *> getTotalOrders(void) const;
 
-            void addTotalOrder(void);
+            void addTotalOrder(Pizza *pizza);
 
-            int getAwaitingOrders(void) const;
+            void addAwaitingOrder(Pizza *pizza);
 
-            int getProcessingOrders(void) const;
+            std::list<Pizza *> *getAwaitingOrders(void);
 
-            void addProcessingOrder(void);
+            std::list<Pizza *> *getProcessingOrders(void);
 
-            int getCompletedOrders(void) const;
+            void addProcessingOrder(Pizza *pizza);
 
-            void addCompletedOrder(void);
+            std::list<Pizza *> getCompletedOrders(void) const;
+
+            void addCompletedOrder(Pizza *pizza);
+
+            void refillIngredients(void);
+
+            int getIngredientsQuantity(Ingredients ingredient);
 
         private:
             int _id;
             Pipe *_pipe;
             Pipe *_masterPipe;
 
-            int _ordersProcessing;
-            int _ordersCompleted;
-            int _totalOrders;
+            std::list<Pizza *> _ordersProcessing;
+            std::list<Pizza *> _ordersCompleted;
+            std::list<Pizza *> _ordersAwaiting;
+            std::list<Pizza *> _totalOrders;
+            std::list<Ingredients> _ingredients;
+
+            void _takeIngredients(Pizza *pizza);
 
     };
 

@@ -10,13 +10,23 @@
 
     #include <vector>
     #include <string>
+    #include <list>
+    #include "Pizza.hpp"
 
-bool isNumberAndPositive(char const *target);
+namespace Plazza {
 
-std::vector<std::string> splitString(std::string target, std::string dlm);
+    bool isNumberAndPositive(char const *target);
 
-bool stringStartsWith(std::string prefix, std::string target);
+    std::vector<std::string> splitString(std::string target, std::string dlm);
 
-std::string retrieveError(void);
+    bool stringStartsWith(std::string prefix, std::string target);
+
+    std::string retrieveError(void);
+
+    Plazza::Pizza *autoRemoveOrder(std::list<Plazza::Pizza *> *pizzas, Plazza::Pizza *target);
+
+    void autoClear(std::list<Plazza::Pizza *> *pizzas);
+
+}
 
 #endif /* !UTILS_HPP_ */

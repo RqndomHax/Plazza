@@ -62,9 +62,9 @@ namespace Plazza {
             Job<Kitchen> *_orderHandler = nullptr;
             std::vector<Job<Kitchen> *> _cooks;
 
-            std::list<Ingredients> _ingredients;
+            std::list<Ingredients> _ingredients = {};
 
-            bool _isActive;
+            bool _isActive = true;
             void _handleKitchen(void);
 
             void _updateOrders(void);

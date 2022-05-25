@@ -67,11 +67,13 @@ namespace Plazza {
     }
 
     void ChefJob::runJob(void) {
-        while (this->_jobOwner != nullptr && this->_jobOwner->isActive()) {
-            if (this->_currentPizza == nullptr)
-                continue;
-
+        while (this->_jobOwner->isActive()) {
             this->_jobOwner->mutex.lock();
+            if (this->_currentPizza == nullptr) {
+                this->_jobOwner->mutex.unlock();
+                continue;
+            }
+
             if (!_hasIngredients()) {
                 this->_jobOwner->mutex.unlock();
                 if (!this->_statusIngredient) {
@@ -90,8 +92,10 @@ namespace Plazza {
 
             *this->_jobOwner->getMasterPipe() << this->_jobOwner->retrieveId() + this->_retrieveId() + this->_getPizza() + "Cooking finished.";
 
+            this->_jobOwner->mutex.lock();
             delete this->_currentPizza;
             this->_currentPizza = nullptr;
+            this->_jobOwner->mutex.unlock();
         }
     }
 

@@ -11,6 +11,8 @@
 #include <PizzeriaJob.hpp>
 #include <unistd.h>
 #include <iostream>
+#include <sys/wait.h>
+#include <Utils.hpp>
 
 namespace Plazza {
 
@@ -18,39 +20,75 @@ namespace Plazza {
         this->_settings = settings;
         this->_nextId = 1;
 
-        this->_totalOrders = 0;
-        this->_completedOrders = 0;
-        this->inProgressOrders = 0;
+        this->_totalOrders = {};
+        this->_completedOrders = {};
+        this->_processingOrders = {};
+        this->_awaitingOrders = {};
         this->_masterPipe = new Pipe();
         this->_job = new PizzeriaJob(this);
         this->_logger = logger;
+        this->isFork = false;
+        this->isActive = true;
         *this->_logger << "Pizzeria initialized!";
     }
 
     Pizzeria::~Pizzeria() {
+        this->mutex.lock();
         *this->_masterPipe << "\n";
+        this->isActive = false;
         for (KitchenInfo *tmp : this->_kitchens) {
+            if (tmp == nullptr)
+                continue;
             *tmp->getPipe() << "[EXIT]";
             delete tmp->getPipe();
             delete tmp;
         }
+        this->_kitchens.clear();
+        autoClear(&this->_awaitingOrders);
+        autoClear(&this->_processingOrders);
+        autoClear(&this->_completedOrders);
+        autoClear(&this->_totalOrders);
+        this->mutex.unlock();
         if (this->_job != nullptr) {
             this->_job->joinThread();
             delete this->_job;
         }
+        this->mutex.lock();
         if (this->_masterPipe != nullptr)
             delete this->_masterPipe;
-        this->_kitchens.clear();
+        this->mutex.unlock();
     }
 
     void Pizzeria::dispatchOrder(Order order) {
         for (int i = 0; i < order.getQuantity(); i++) {
             KitchenInfo *kitchen = this->retrieveBestKitchen();
 
+            if (kitchen == nullptr || this->isFork)
+                return;
             *kitchen->getPipe() << "[COOK] " + order.getPizza().pack();
-            kitchen->addTotalOrder();
-            this->_totalOrders += 1;
+            kitchen->addAwaitingOrder(new Pizza(order.getPizza()));
+            kitchen->addTotalOrder(new Pizza(order.getPizza()));
+            this->_awaitingOrders.push_back(new Pizza(order.getPizza()));
+            this->_totalOrders.push_back(new Pizza(order.getPizza()));
         }
+    }
+
+    void Pizzeria::dispatchOldOrders(std::list<Pizza *> *pizzas) {
+        for (Pizza *pizza : *pizzas) {
+            KitchenInfo *kitchen = this->retrieveBestKitchen();
+
+            if (kitchen == nullptr || this->isFork)
+                return;
+            *kitchen->getPipe() << "[COOK] " + pizza->pack();
+            kitchen->addAwaitingOrder(new Pizza(*pizza));
+            kitchen->addTotalOrder(new Pizza(*pizza));
+            this->_awaitingOrders.push_back(new Pizza(*pizza));
+            this->_totalOrders.push_back(new Pizza(*pizza));
+
+            delete pizza;
+        }
+
+        pizzas->clear();
     }
 
     void Pizzeria::removeKitchen(KitchenInfo *kitchen) {
@@ -60,7 +98,7 @@ namespace Plazza {
 
     KitchenInfo *Pizzeria::createKitchen() {
         KitchenInfo *kitchenInfo = new KitchenInfo(this->_nextId++, new Pipe(), this->_masterPipe);
-        kitchenInfo->createKitchen(this->_settings);
+        this->isFork = kitchenInfo->createKitchen(this->_settings);
         this->_kitchens.push_back(kitchenInfo);
         return (kitchenInfo);
     }
@@ -87,13 +125,13 @@ namespace Plazza {
             if (kitchen->isClosed)
                 continue;
             
-            if (kitchen->getAwaitingOrders() + kitchen->getProcessingOrders() >= this->_settings.getCooks() * 2)
+            if (kitchen->getAwaitingOrders()->size() + kitchen->getProcessingOrders()->size() >= (std::size_t) (this->_settings.getCooks() * 2))
                 continue;
             if (bestKitchen == nullptr) {
                 bestKitchen = kitchen;
                 continue;
             }
-            if (kitchen->getAwaitingOrders() + kitchen->getProcessingOrders() < bestKitchen->getAwaitingOrders() + kitchen->getProcessingOrders())
+            if (kitchen->getAwaitingOrders()->size() + kitchen->getProcessingOrders()->size() < bestKitchen->getAwaitingOrders()->size() + kitchen->getProcessingOrders()->size())
                 bestKitchen = kitchen;
         }
 
@@ -114,20 +152,38 @@ namespace Plazza {
         return (this->_logger);
     }
 
-    int Pizzeria::getAwaitingOrders(void) const {
-        return (this->_totalOrders - (this->_completedOrders + this->inProgressOrders));
+    std::list<Pizza *> Pizzeria::getAwaitingOrders(void) const {
+        return (this->_awaitingOrders);
     }
 
-    int Pizzeria::getTotalOrders(void) const {
+    std::list<Pizza *> Pizzeria::getTotalOrders(void) const {
         return (this->_totalOrders);
     }
 
-    int Pizzeria::getCompletedOrders(void) const {
+    std::list<Pizza *> Pizzeria::getCompletedOrders(void) const {
         return (this->_completedOrders);
     }
 
-    void Pizzeria::addCompletedOrders(void) {
-        this->_completedOrders += 1;
+    void Pizzeria::addCompletedOrders(Pizza *pizza) {
+        Pizza *target = autoRemoveOrder(&this->_processingOrders, pizza);
+
+        if (target == nullptr)
+            this->_completedOrders.push_back(new Pizza(*pizza));
+        else
+            this->_completedOrders.push_back(target);
+    }
+
+    std::list<Pizza *> Pizzeria::getProcessingOrders(void) const {
+        return (this->_processingOrders);
+    }
+
+    void Pizzeria::addProcessingOrders(Pizza *pizza) {
+        Pizza *target = autoRemoveOrder(&this->_awaitingOrders, pizza);
+
+        if (target == nullptr)
+            this->_processingOrders.push_back(new Pizza(*pizza));
+        else
+            this->_processingOrders.push_back(target);
     }
 
 }
