@@ -25,6 +25,15 @@ namespace Plazza {
         cbreak();
         noecho();
         timeout(0);
+<<<<<<< HEAD
+=======
+        start_color();
+        init_pair(1, COLOR_BLACK, COLOR_BLUE); // black text on blue background
+        init_pair(2, COLOR_BLUE, COLOR_BLACK); // blue text on black background
+        init_pair(3, COLOR_RED, COLOR_WHITE); // red text on white background
+        init_pair(4, COLOR_GREEN, COLOR_BLACK); // green text on black background
+        init_pair(5, COLOR_CYAN, COLOR_BLACK); // cyan text on black background
+>>>>>>> bonus
         keypad(stdscr, true);
     }
 
@@ -79,11 +88,50 @@ namespace Plazza {
     void DisplayManager::_printDisplay(void) {
         clear();
 
+<<<<<<< HEAD
         this->_printKichenInfos(this->_pizzeria->getKitchen(this->_kitchenId));
+=======
+        attron(COLOR_PAIR(4));
+        this->_printKichenInfos(this->_pizzeria->getKitchen(this->_kitchenId));
+        attron(COLOR_PAIR(5));
+        this->_printInfos();
+>>>>>>> bonus
         this->_printKitchens();
         refresh();
     }
 
+<<<<<<< HEAD
+=======
+    int DisplayManager::_countKitchenClosed(void) const {
+        int i = 0;
+
+        for (KitchenInfo *info : this->_pizzeria->getKitchens())
+            if (info->isClosed)
+                i++;
+        return (i);
+    }
+
+    void DisplayManager::_printInfos(void) {
+        int x = 0;
+
+        int closed_kitchens = this->_countKitchenClosed();
+
+        mvprintw(1, x+=20, ("Kitchens active [" + std::to_string(this->_pizzeria->getKitchens().size() - closed_kitchens) + "]").c_str());
+        mvprintw(1, x+=20, ("Kitchens closed [" + std::to_string(closed_kitchens) + "]").c_str());
+
+        mvprintw(1, x+=20, ("Awaiting orders [" + std::to_string(this->_pizzeria->getAwaitingOrders().size()) + "]").c_str());
+        mvprintw(1, x+=22, ("Processing orders [" + std::to_string(this->_pizzeria->getProcessingOrders().size()) + "]").c_str());
+        mvprintw(1, x+=25, ("Completed orders [" + std::to_string(this->_pizzeria->getCompletedOrders().size()) + "]").c_str());
+        mvprintw(1, x+=26, ("Total orders [" + std::to_string(this->_pizzeria->getTotalOrders().size()) + "]").c_str());
+
+        x = 0;
+        mvprintw(3, x+=25, "[U] - Order regina");
+        mvprintw(3, x+=25, "[I] - Order margarita");
+        mvprintw(3, x+=25, "[J] - Order americana");
+        mvprintw(3, x+=25, "[K] - Order fantasia");
+    }
+
+>>>>>>> bonus
     void DisplayManager::_printKichenInfos(KitchenInfo *info) {
         if (info == nullptr)
             return;
@@ -113,6 +161,16 @@ namespace Plazza {
                 return;
             mvprintw(y += 2, 70, (*it)->pack().c_str());
         }
+<<<<<<< HEAD
+=======
+        y = 5;
+        mvprintw(y += 2, 112, std::string("==== QUEUED ORDERS ====").c_str());
+        for (std::list<Pizza *>::iterator it = info->getAwaitingOrders()->begin(); it != info->getAwaitingOrders()->end(); it++) {
+            if (y >= COLS)
+                return;
+            mvprintw(y += 2, 112, (*it)->pack().c_str());
+        }
+>>>>>>> bonus
     }
 
     void DisplayManager::_printKitchens(void) {
@@ -122,6 +180,16 @@ namespace Plazza {
                 continue;
             if (y >= COLS)
                 return;
+<<<<<<< HEAD
+=======
+            if (!kitchen->isClosed) {
+                attron(COLOR_PAIR(2));
+                if (kitchen->getId() == this->_kitchenId)
+                    attron(COLOR_PAIR(1));
+            }
+            else
+                attron(COLOR_PAIR(3));
+>>>>>>> bonus
             mvprintw(y += 2, 2, ("Kitchen[" + std::to_string(kitchen->getId()) + "]").c_str());
         }
     }

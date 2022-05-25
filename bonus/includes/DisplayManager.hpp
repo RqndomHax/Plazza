@@ -47,6 +47,13 @@ namespace Plazza {
 
             void _printKitchens(void);
 
+<<<<<<< HEAD
+=======
+            void _printInfos(void);
+
+            int _countKitchenClosed(void) const;
+
+>>>>>>> bonus
             Pizzeria *_pizzeria;
 
             PizzaManager _pizzaManager;
